@@ -4,9 +4,11 @@
 > 주 실습환경: **macOS + OrbStack + Ubuntu 24.04 LTS + OrbStack Docker**  
 > OrbStack Linux machine 이름: **`codyssey-training`**
 
-이 문서는 입문자가 코디세이 E1-1 미션을 **환경 준비 → Linux 실습 → Docker 실습 → 증거 수집 → GitHub 제출 → 동료평가 준비** 순서로 수행하도록 만든 단계별 지침서입니다.
+이 문서는 입문자가 E1-1 미션을 다음 순서로 수행하도록 구성한 실습 지침서입니다.
 
-> 아래 명령은 본인의 환경에서 직접 실행해야 합니다. 문서의 예시 출력이나 다른 사람의 화면을 제출물로 사용하지 않습니다.
+> **환경 준비 → Docker 연결 확인 → GitHub CLI 인증 → 브랜치 작업 → add·commit·push → Pull Request → Docker 실습 → 증거 정리 → PR 병합 → 동료평가 준비**
+
+아래 명령은 본인의 환경에서 직접 실행합니다. 예시 출력이나 다른 사람의 화면을 제출하지 않습니다.
 
 ---
 
@@ -14,168 +16,175 @@
 
 | 표시 | 의미 |
 |---|---|
-| **[필수]** | 코디세이 미션 문서에서 요구하는 항목 |
-| **[권장]** | 입문자의 안정적인 수행과 평가 준비를 위한 보완 항목 |
-| **[보너스]** | 필수 과제를 완료한 뒤 수행하는 선택 항목 |
+| **[필수]** | 미션 문서에서 요구하는 항목 |
+| **[권장]** | 입문자의 안정적인 수행과 평가 준비를 위한 항목 |
+| **[선택]** | 환경이나 운영 방식에 따라 선택하는 항목 |
+| **[보너스]** | 필수 요구사항을 완료한 뒤 수행하는 확장 과제 |
 | **[macOS]** | Mac 터미널에서 실행 |
-| **[Ubuntu]** | OrbStack의 `codyssey-training` Linux machine 안에서 실행 |
+| **[Ubuntu]** | `codyssey-training` Linux machine에서 실행 |
 
-공식 문서 번호 `[R1]` 등은 문서 마지막의 **공식 참고문헌**과 연결됩니다.
+문서의 `[R1]` 같은 번호는 마지막 **공식 참고문헌**과 연결됩니다.
 
 ---
 
 # 목차
 
-1. 미션 목표와 완료 기준
-2. 전체 수행 순서
-3. 구조와 용어 이해
-4. 최종 저장소 구조
-5. macOS와 OrbStack 사전 점검
-6. Ubuntu 24.04 `codyssey-training` 생성
-7. Ubuntu 기본 환경 설정
-8. OrbStack Docker 연동
-9. GitHub 저장소 복제
-10. 환경 기준선 기록
-11. 터미널 기본 조작
-12. 파일과 디렉터리 권한
-13. Docker 기본 점검
-14. 이미지와 컨테이너 운영
-15. Dockerfile 기반 웹 서버
-16. 포트 매핑과 접속 검증
-17. 바인드 마운트
-18. Docker 볼륨 영속성
-19. Git·GitHub·VS Code
-20. 보안과 민감정보
-21. 트러블슈팅
-22. 요구사항·테스트·증거 추적
-23. 결과 README 작성
-24. 40시간 권장 학습계획
-25. 품질 게이트
-26. 시험·동료평가 대비
-27. FAIL 이후 보완
-28. 보너스 과제
-29. 최종 제출 체크리스트
-30. 공식 참고문헌
+1. 미션 완료 기준
+2. 입문자 전체 수행 흐름
+3. 구조와 핵심 용어
+4. 저장소 구조
+5. macOS·OrbStack 사전 점검
+6. Ubuntu 24.04 machine 생성
+7. Ubuntu 기본환경과 네트워크 점검
+8. OrbStack Docker 연동 및 경로 사전 시험
+9. GitHub CLI 설치
+10. GitHub CLI 인증
+11. 저장소 clone과 상태 확인
+12. Git 상태 모델 이해
+13. 브랜치 운영 원칙
+14. `git add` 방법과 안전한 staging
+15. commit 작성과 기록 원칙
+16. push 방법과 원격 상태 확인
+17. GitHub CLI로 Pull Request 생성
+18. PR 진행상태·diff·검사·리뷰 관리
+19. PR 병합 방식과 작업 정리
+20. 실수 복구와 충돌 예방
+21. 터미널 기본 조작
+22. 파일·디렉터리 권한
+23. Docker 이미지·컨테이너 운영
+24. Dockerfile 기반 웹 서버
+25. 포트 매핑
+26. 바인드 마운트
+27. Docker 볼륨 영속성
+28. Git·PR 현황 기록 문서
+29. 요구사항·테스트·증거 추적
+30. clean clone 재현 시험
+31. 보안과 민감정보
+32. 트러블슈팅
+33. 40시간 권장 학습계획
+34. 품질 게이트
+35. 시험·동료평가 대비
+36. 보너스 과제
+37. 최종 제출 체크리스트
+38. 공식 참고문헌
 
 ---
 
-# 1. 미션 목표와 완료 기준
+# 1. 미션 완료 기준
 
-## 1.1 [필수] 최종 산출물
-
-GitHub 저장소에서 다음 내용을 확인할 수 있어야 합니다.
+GitHub 저장소의 **Default branch**에서 다음 내용을 확인할 수 있어야 합니다.
 
 - 터미널로 파일과 디렉터리를 생성·복사·이동·삭제한다.
-- 파일과 디렉터리의 권한을 확인하고 변경한다.
-- Docker 버전과 Engine 상태를 점검한다.
-- Docker 이미지와 컨테이너를 실행·중지·조회한다.
-- `Dockerfile`을 직접 작성하고 커스텀 이미지를 빌드한다.
+- 파일과 디렉터리 권한을 확인하고 변경한다.
+- Docker 버전과 Engine 상태를 확인한다.
+- 이미지와 컨테이너를 실행·조회·중지·삭제한다.
+- `Dockerfile`을 직접 작성해 커스텀 이미지를 빌드한다.
 - 포트 매핑으로 웹 서버에 접속한다.
-- 바인드 마운트로 호스트 파일 변경이 반영되는지 확인한다.
+- 바인드 마운트로 파일 변경이 반영되는지 확인한다.
 - Docker 볼륨으로 컨테이너 삭제 후에도 데이터가 유지되는지 확인한다.
-- Git 사용자 설정과 GitHub·VS Code 연동 상태를 기록한다.
+- Git 설정, GitHub 인증, VS Code 연동 상태를 기록한다.
+- 브랜치에서 작업하고 Pull Request로 검토·병합한다.
 - 트러블슈팅을 최소 2건 이상 기록한다.
-- 기술 문서만 보고 평가자가 동일 절차를 재현할 수 있게 한다.
-- 로그와 이미지에 토큰·비밀번호·개인키를 노출하지 않는다.
-
-## 1.2 학습 후 설명할 수 있어야 하는 내용
-
-- 절대 경로와 상대 경로의 차이
-- 파일 권한 `r`, `w`, `x`와 `755`, `644`
-- OrbStack Linux machine과 Docker 컨테이너의 차이
-- Docker 이미지와 컨테이너의 차이
-- Dockerfile과 이미지 빌드의 관계
-- 호스트 포트와 컨테이너 포트의 차이
-- 바인드 마운트와 Docker 볼륨의 차이
-- Git과 GitHub의 역할 차이
-- 오류를 `문제 → 가설 → 확인 → 해결 → 재검증`으로 분석하는 방법
+- 문서만 보고 평가자가 같은 절차를 재현할 수 있게 한다.
+- 토큰·비밀번호·개인키를 저장소와 스크린샷에 노출하지 않는다.
 
 ---
 
-# 2. 전체 수행 순서
+# 2. 입문자 전체 수행 흐름
 
-입문자는 다음 순서를 유지합니다.
+다음 순서를 바꾸지 않습니다.
 
 ```text
-1. Mac에서 OrbStack 실행 확인
-2. Ubuntu 24.04 Linux machine 생성
-3. machine 이름을 codyssey-training으로 고정
-4. Ubuntu 기본 도구 설치
-5. Ubuntu에서 OrbStack Docker 명령 연결
-6. GitHub 저장소 clone
-7. 실행 환경 기준선 기록
-8. 터미널 조작 실습
-9. 파일·디렉터리 권한 실습
-10. Docker 기본 운영
-11. Dockerfile 작성과 이미지 빌드
-12. 포트 매핑 검증
-13. 바인드 마운트 검증
-14. 볼륨 영속성 검증
-15. Git·GitHub·VS Code 증거 정리
-16. 트러블슈팅 2건 이상 작성
-17. 요구사항·테스트·증거 추적표 작성
-18. clean clone 재현 시험
-19. 모의 동료평가
-20. 최종 push와 제출
+1. OrbStack 실행 확인
+2. Ubuntu 24.04 codyssey-training 생성
+3. Ubuntu 기본 패키지와 네트워크 확인
+4. OrbStack Docker 연결
+5. Docker 빌드·바인드 마운트 경로 사전 시험
+6. GitHub CLI 설치
+7. GitHub CLI 로그인과 Git credential 설정
+8. gh repo clone으로 저장소 복제
+9. main 최신화
+10. 작업 브랜치 생성
+11. 작은 단위로 파일 작성
+12. status → diff → add → cached diff → commit
+13. 첫 push와 upstream 설정
+14. Draft PR 생성
+15. Docker·권한·문서 실습을 commit 단위로 추가
+16. PR diff와 checks 확인
+17. Ready for review 전환
+18. 검토 후 PR 병합
+19. main 최신화와 브랜치 정리
+20. clean clone 재현
+21. 최종 문서·증거·보안 점검
+22. 동료평가
 ```
+
+## 단계 중지 원칙
+
+각 단계의 정상 기준을 통과하지 못하면 다음 단계로 넘어가지 않습니다.
+
+- Docker 연결 실패 상태에서 Dockerfile 실습으로 넘어가지 않는다.
+- GitHub 인증 실패 상태에서 clone·push를 반복하지 않는다.
+- `git diff --cached`를 확인하지 않고 commit하지 않는다.
+- PR diff를 확인하지 않고 merge하지 않는다.
 
 ---
 
-# 3. 구조와 용어 이해
-
-## 3.1 전체 구조
+# 3. 구조와 핵심 용어
 
 ```text
 Mac
 ├── macOS
-├── OrbStack 애플리케이션
+├── OrbStack
 │   ├── Linux machine: codyssey-training
 │   │   └── Ubuntu 24.04 LTS
-│   │       └── Git 저장소 작업 폴더
+│   │       └── Git 작업 디렉터리
 │   └── OrbStack Docker Engine
 │       ├── images
 │       ├── containers
 │       └── volumes
-└── 브라우저 / VS Code
+├── GitHub CLI(gh)
+├── VS Code
+└── 브라우저
 ```
 
-OrbStack은 Docker 컨테이너와 Linux machine을 실행할 수 있습니다. Linux machine은 경량 Linux 실행환경이고, Docker 컨테이너는 Docker 이미지에서 실행되는 격리된 프로세스 환경입니다. 두 개념을 혼동하지 않습니다. [R1][R2]
-
-## 3.2 핵심 용어
-
-| 용어 | 의미 |
+| 용어 | 설명 |
 |---|---|
-| macOS 호스트 | OrbStack이 설치된 실제 Mac |
-| OrbStack | Mac에서 Docker와 Linux machine을 실행·관리하는 도구 |
-| Linux machine | OrbStack 안에서 실행되는 Linux 환경 |
-| `codyssey-training` | 이 과정의 Ubuntu 24.04 machine 이름 |
-| Docker Engine | 이미지·컨테이너·네트워크·볼륨을 관리하는 엔진 |
-| Docker CLI | `docker run`, `docker ps` 등의 명령 도구 |
-| Docker context | Docker CLI가 연결할 Engine 대상을 나타내는 설정 |
-| 이미지 | 컨테이너 실행에 필요한 파일과 설정의 템플릿 |
-| 컨테이너 | 이미지를 기반으로 실행한 인스턴스 |
-| Dockerfile | 이미지를 만드는 명령을 기록한 텍스트 문서 |
-| 포트 매핑 | 호스트 포트와 컨테이너 포트를 연결하는 작업 |
-| 바인드 마운트 | 실제 디렉터리를 컨테이너 경로에 직접 연결하는 방식 |
-| 볼륨 | Docker가 관리하는 영속 저장소 |
-| Git | 로컬 변경 이력 관리 도구 |
-| GitHub | Git 저장소를 원격에서 저장·공유·협업하는 서비스 |
+| Working tree | 현재 파일을 수정하는 작업 공간 |
+| Staging area | 다음 commit에 넣을 변경을 선택하는 영역 |
+| Commit | 선택한 변경의 스냅샷과 설명 |
+| Branch | 독립적으로 작업하기 위한 commit 흐름 |
+| Remote | GitHub와 같은 원격 저장소 연결 |
+| Push | 로컬 commit을 원격 브랜치로 전송 |
+| Pull Request | 브랜치 변경을 base branch에 병합하도록 제안·검토하는 단위 |
+| Draft PR | 아직 완성되지 않았지만 진행상황을 공유하는 PR |
+| Base branch | 변경을 받아들일 대상 브랜치, 이 문서에서는 `main` |
+| Head branch | 작업 commit이 있는 브랜치 |
+| Merge | PR의 변경을 base branch에 반영 |
+| `gh` | GitHub 인증·저장소·Issue·PR 등을 터미널에서 다루는 공식 CLI |
+
+OrbStack Linux machine과 Docker 컨테이너는 서로 다릅니다. Linux machine은 Ubuntu 실습환경이고, Docker 컨테이너는 이미지에서 실행되는 격리된 프로세스 환경입니다. [R1][R2]
 
 ---
 
-# 4. 최종 저장소 구조
+# 4. 저장소 구조
 
 ```text
 codyssey-training-e1-1/
-├── E1-1-training.md          # 현재 학습 지침서
-├── README.md                 # 실제 수행 결과와 평가용 문서
+├── README.md
+├── E1-1-training.md
 ├── Dockerfile
 ├── .dockerignore
 ├── .gitignore
+├── .github/
+│   └── pull_request_template.md
 ├── site/
+│   └── index.html
+├── bind-test/
 │   └── index.html
 ├── docs/
 │   ├── environment.md
+│   ├── git-workflow.md
 │   ├── terminal-and-permissions.md
 │   ├── docker-operations.md
 │   ├── bind-mount.md
@@ -185,6 +194,7 @@ codyssey-training-e1-1/
 │   ├── requirement-traceability.md
 │   └── screenshots/
 │       ├── environment/
+│       ├── git/
 │       ├── terminal/
 │       ├── permissions/
 │       ├── docker/
@@ -196,21 +206,19 @@ codyssey-training-e1-1/
     └── verify.sh             # 선택
 ```
 
-`E1-1-training.md`는 수행 방법을 설명합니다. 실제 명령 출력, 화면, 문제 해결 결과는 `README.md`와 `docs/`에 기록합니다.
+- `E1-1-training.md`: 수행 방법
+- `README.md`: 평가자가 가장 먼저 보는 결과 요약
+- `docs/`: 실제 명령, 출력, 오류, 증거
+- `.github/pull_request_template.md`: PR 작성 시 빠뜨리기 쉬운 항목 점검
 
 ---
 
-# 5. macOS와 OrbStack 사전 점검
+# 5. macOS·OrbStack 사전 점검
 
 ## 5.1 [macOS] OrbStack 실행
 
-1. OrbStack 애플리케이션을 실행합니다.
-2. 메뉴 막대에서 실행 상태를 확인합니다.
-3. Mac 터미널을 엽니다.
-
-## 5.2 [macOS] OrbStack CLI 확인
-
 ```bash
+# [macOS]
 orb version
 orb status
 orb list
@@ -218,67 +226,56 @@ orb list
 
 정상 기준:
 
-- `orb version`에 버전이 출력된다.
+- 버전이 출력된다.
 - `orb status`가 오류 없이 실행된다.
-- `orb list`에서 machine 목록을 볼 수 있다.
+- machine 목록을 확인할 수 있다.
 
-OrbStack은 GUI뿐 아니라 `orb` 명령으로 machine 생성·접속·시작·중지 등을 수행할 수 있습니다. [R3]
-
-## 5.3 [macOS] OrbStack Docker 확인
+## 5.2 [macOS] OrbStack Docker 확인
 
 ```bash
+# [macOS]
 docker version
 docker context ls
 docker context show
 ```
 
-현재 context가 `orbstack`이 아니면 다음을 실행합니다.
+Mac의 현재 context가 `orbstack`이 아니면 다음을 실행합니다.
 
 ```bash
+# [macOS]
 docker context use orbstack
 docker context show
 ```
 
-정상 기준:
-
-- Docker Client와 Server 정보가 출력된다.
-- 현재 context가 `orbstack`이다.
+> Ubuntu machine 안의 `docker context show` 문자열만으로 성공·실패를 판정하지 않습니다. Ubuntu에서는 `docker version`, `docker info`, `hello-world` 실행 성공을 기준으로 판단합니다.
 
 ---
 
-# 6. Ubuntu 24.04 `codyssey-training` 생성
+# 6. Ubuntu 24.04 machine 생성
 
-OrbStack은 Ubuntu를 포함한 여러 Linux 배포판과 버전을 지원합니다. Ubuntu 24.04 LTS의 코드명은 `noble`이며, 공식 문서는 `orb create ubuntu:noble` 형식을 제시합니다. [R2][R4]
+Ubuntu 24.04 LTS의 코드명은 `noble`입니다. [R2][R4]
 
 ## 6.1 기존 machine 확인
 
-**[macOS]**
-
 ```bash
+# [macOS]
 orb list
-```
-
-`codyssey-training`이 이미 있으면 새로 만들지 않습니다.
-
-```bash
 orb info codyssey-training
 ```
 
-> `orb delete`는 machine 내부 데이터를 삭제할 수 있으므로 입문자는 임의로 실행하지 않습니다.
+`codyssey-training`이 이미 있으면 다시 만들지 않습니다. 기존 machine을 삭제하면 내부 데이터가 손실될 수 있습니다.
 
 ## 6.2 새 machine 생성
 
-다음 두 방식 중 **하나만** 실행합니다.
-
-### 기본 생성
+다음 두 방식 중 하나만 실행합니다.
 
 ```bash
+# [macOS] 기본
 orb create ubuntu:noble codyssey-training
 ```
 
-### 자원 제한을 포함한 권장 생성
-
 ```bash
+# [macOS] 자원 제한 예시
 orb create \
   --memory 4G \
   --cpus 2 \
@@ -287,28 +284,15 @@ orb create \
   codyssey-training
 ```
 
-OrbStack 공식 문서는 생성 시 CPU·메모리·디스크 제한을 지정할 수 있다고 설명합니다. [R2]
-
-## 6.3 생성 결과 확인
+## 6.3 접속과 확인
 
 ```bash
-orb list
-orb info codyssey-training
-```
-
-## 6.4 machine 접속
-
-```bash
+# [macOS]
 orb -m codyssey-training
 ```
 
-특정 machine과 사용자를 지정하는 형식은 OrbStack 공식 명령 문서에서 확인할 수 있습니다. [R3]
-
-## 6.5 Ubuntu 버전 확인
-
-**[Ubuntu]**
-
 ```bash
+# [Ubuntu]
 cat /etc/os-release
 uname -a
 uname -m
@@ -318,57 +302,50 @@ pwd
 
 정상 기준:
 
-- Ubuntu 24.04 또는 `VERSION_CODENAME=noble`이 표시된다.
-- 현재 사용자와 홈 디렉터리가 확인된다.
+- Ubuntu 24.04 또는 `VERSION_CODENAME=noble`
+- 현재 사용자와 홈 디렉터리 확인
 
-## 6.6 종료·재접속·중지·시작
-
-Ubuntu 셸에서 Mac으로 돌아가기:
+## 6.4 종료·시작
 
 ```bash
+# [Ubuntu → macOS]
 exit
 ```
 
-다시 접속하기:
-
 ```bash
+# [macOS]
+orb stop codyssey-training
+orb start codyssey-training
 orb -m codyssey-training
 ```
 
-machine 중지와 시작:
-
-```bash
-orb stop codyssey-training
-orb start codyssey-training
-```
-
-사용 중인 OrbStack 버전의 정확한 옵션은 다음 명령으로 확인합니다.
-
-```bash
-orb stop --help
-orb start --help
-```
+설치된 OrbStack 버전의 정확한 옵션은 `orb <command> --help`로 확인합니다. [R3]
 
 ---
 
-# 7. Ubuntu 기본 환경 설정
+# 7. Ubuntu 기본환경과 네트워크 점검
 
-## 7.1 패키지 목록 갱신
-
-**[Ubuntu]**
+## 7.1 네트워크 확인
 
 ```bash
-sudo apt update
+# [Ubuntu]
+getent hosts github.com
+curl -I https://github.com
 ```
 
-## 7.2 기본 도구 설치
+DNS 또는 HTTPS 연결이 실패하면 `apt`, `gh`, `git clone`, `docker pull`도 실패할 수 있습니다. 학교 네트워크 문제와 도구 설정 문제를 먼저 구분합니다.
+
+## 7.2 기본 패키지 설치
 
 ```bash
+# [Ubuntu]
+sudo apt update
 sudo apt install -y \
   ca-certificates \
   curl \
   wget \
   git \
+  gnupg \
   vim \
   nano \
   tree \
@@ -377,273 +354,978 @@ sudo apt install -y \
   zip
 ```
 
-## 7.3 설치 확인
-
 ```bash
+# [Ubuntu]
 git --version
 curl --version | head -n 1
-tree --version
 jq --version
 ```
 
-## 7.4 파일 공유 위치 확인
-
-OrbStack Linux machine에서는 Mac 파일을 `/mnt/mac`에서 볼 수 있으며, Mac에서는 Linux 파일을 `~/OrbStack` 또는 Finder의 OrbStack 항목에서 볼 수 있습니다. [R2][R5]
+## 7.3 작업 디렉터리
 
 ```bash
-ls -la /mnt/mac | head
-```
-
-실습 저장소는 Linux 권한과 경로를 안정적으로 연습하도록 Ubuntu 홈 디렉터리에 둡니다.
-
-```bash
+# [Ubuntu]
 mkdir -p ~/codyssey-training
 cd ~/codyssey-training
 pwd
 ```
 
+OrbStack의 Mac·Linux 파일 공유 방식은 공식 문서를 참고합니다. [R5]
+
 ---
 
-# 8. OrbStack Docker 연동
+# 8. OrbStack Docker 연동 및 경로 사전 시험
 
-## 8.1 사용 구조
-
-```text
-Ubuntu 24.04 machine의 터미널
-        ↓ docker 명령
-macOS의 OrbStack Docker CLI
-        ↓
-OrbStack Docker Engine
-        ↓
-이미지·컨테이너·볼륨
-```
-
-이 과정에서는 Ubuntu machine 안에 `docker.io`, `docker-ce`, `containerd`를 별도 설치하지 않습니다. 별도 Engine을 설치하면 OrbStack Docker와 서로 다른 이미지·컨테이너·볼륨을 보게 되어 입문자가 혼동할 수 있습니다.
-
-OrbStack은 Docker 컨테이너 실행환경을 제공하고, Linux machine은 `mac` 명령과 command linking으로 macOS 명령을 사용할 수 있습니다. [R3][R6]
-
-## 8.2 [Ubuntu] macOS의 Docker 위치 확인
+## 8.1 Ubuntu에서 Docker 확인
 
 ```bash
-mac which docker
-```
-
-## 8.3 기존 Docker 명령 확인
-
-```bash
+# [Ubuntu]
 command -v docker || true
 type -a docker || true
-docker version
-docker context show
+mac which docker || true
 ```
 
-정상 실행되면 8.4를 건너뜁니다.
-
-## 8.4 Docker 명령이 없을 때 연결
+Docker 명령이 없으면 OrbStack command link를 연결합니다.
 
 ```bash
+# [Ubuntu]
 mac link docker
 hash -r
 command -v docker
-docker version
-docker context show
 ```
 
-`mac link`는 macOS 명령을 Linux machine에서 일반 명령처럼 사용할 수 있게 연결합니다. [R3]
-
-## 8.5 링크가 깨졌을 때
-
-다음 증상이 있을 때만 실행합니다.
-
-- `command -v docker`는 출력되지만 실행 실패
-- `/opt/orbstack-guest/.../cmdlinks/docker` 관련 오류
-- 오래된 command link가 남아 있는 것으로 판단됨
+연결 검증:
 
 ```bash
+# [Ubuntu]
+docker version
+docker info
+docker run --rm hello-world
+```
+
+정상 기준:
+
+- Client와 Server 정보가 표시된다.
+- `docker info`가 Engine 정보를 반환한다.
+- `Hello from Docker!`가 출력된다.
+
+`docker context show`는 참고용으로 확인합니다.
+
+```bash
+# [Ubuntu]
+docker context show || true
+```
+
+## 8.2 command link 복구
+
+링크 오류가 있을 때만 실행합니다.
+
+```bash
+# [Ubuntu]
 mac unlink docker
 mac link docker
 hash -r
 exec "$SHELL" -l
 ```
 
-새 셸에서 다시 확인합니다.
+다시 확인합니다.
 
 ```bash
+# [Ubuntu]
 command -v docker
 docker version
-docker context show
+docker info
 ```
 
-Mac에서도 확인합니다.
+## 8.3 Docker 경로 사전 시험 — 반드시 먼저 수행
+
+Ubuntu 홈 디렉터리의 파일을 Docker build와 bind mount에서 정상 처리하는지 확인합니다.
 
 ```bash
-orb status
-docker context use orbstack
-docker version
+# [Ubuntu]
+mkdir -p ~/docker-path-test
+cd ~/docker-path-test
+
+cat > Dockerfile <<'EOF'
+FROM alpine
+COPY test.txt /test.txt
+CMD ["cat", "/test.txt"]
+EOF
+
+echo "OrbStack path test" > test.txt
+
+docker build -t orb-path-test .
+docker run --rm orb-path-test
 ```
 
-OrbStack 자체 재시작이 필요하면 앱 메뉴를 이용하거나 현재 버전의 도움말을 먼저 확인합니다.
+예상 결과:
 
-```bash
-orb restart --help
+```text
+OrbStack path test
 ```
 
-## 8.6 최종 연동 시험
-
-**[Ubuntu]**
+바인드 마운트 시험:
 
 ```bash
-docker run --rm hello-world
-docker ps
-docker ps -a
+# [Ubuntu]
+docker run --rm \
+  -v "$PWD:/data:ro" \
+  alpine \
+  cat /data/test.txt
+```
+
+두 시험이 성공해야 본 미션의 Dockerfile과 바인드 마운트 단계로 이동합니다.
+
+## 8.4 Mac과 Ubuntu가 같은 Engine을 보는지 확인
+
+```bash
+# [Ubuntu]
 docker images
 ```
 
-**[macOS]** 별도 터미널:
-
 ```bash
+# [macOS, 별도 터미널]
 docker images
 ```
 
-Mac과 Ubuntu에서 같은 이미지 목록이 보이면 같은 OrbStack Docker Engine을 사용하는 것입니다.
-
-## 8.7 증거로 남길 내용
-
-- `orb list`
-- Ubuntu 24.04 확인 결과
-- `command -v docker`
-- `docker context show`
-- `docker version`
-- `docker run --rm hello-world`
-- Mac과 Ubuntu의 `docker images`
+`orb-path-test` 이미지가 양쪽에서 확인되면 같은 OrbStack Docker Engine을 사용하고 있는 것입니다.
 
 ---
 
-# 9. GitHub 저장소 복제
+# 9. GitHub CLI 설치
 
-GitHub 저장소를 clone하면 원격 저장소의 로컬 복사본이 생성됩니다. [R17][R18]
+GitHub CLI maintainers는 Ubuntu에서 공식 Debian 패키지 저장소 사용을 권장합니다. [R24]
 
-## 9.1 Git 사용자 정보 설정
-
-**[Ubuntu]**
+## 9.1 이미 설치됐는지 확인
 
 ```bash
-git config --global user.name
-git config --global user.email
+# [Ubuntu]
+command -v gh || true
+gh --version || true
 ```
 
-값이 없으면 설정합니다.
+정상 버전이 표시되면 9.2를 건너뜁니다.
+
+## 9.2 공식 저장소로 설치
 
 ```bash
+# [Ubuntu]
+sudo mkdir -p -m 755 /etc/apt/keyrings
+
+wget -nv \
+  -O /tmp/githubcli-archive-keyring.gpg \
+  https://cli.github.com/packages/githubcli-archive-keyring.gpg
+
+sudo cp /tmp/githubcli-archive-keyring.gpg \
+  /etc/apt/keyrings/githubcli-archive-keyring.gpg
+
+sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+
+sudo mkdir -p -m 755 /etc/apt/sources.list.d
+
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" \
+  | sudo tee /etc/apt/sources.list.d/github-cli.list >/dev/null
+
+sudo apt update
+sudo apt install -y gh
+```
+
+설치 확인:
+
+```bash
+# [Ubuntu]
+gh --version
+gh help
+```
+
+---
+
+# 10. GitHub CLI 인증
+
+## 10.1 권장 방식: HTTPS + web login
+
+입문자는 HTTPS와 GitHub CLI credential helper를 사용합니다.
+
+```bash
+# [Ubuntu]
+gh auth login \
+  --hostname github.com \
+  --git-protocol https \
+  --web
+```
+
+화면에 표시되는 일회용 코드를 브라우저 인증 화면에 입력합니다. 토큰 문자열을 문서나 스크린샷에 노출하지 않습니다. [R25]
+
+인증 확인과 Git 연결:
+
+```bash
+# [Ubuntu]
+gh auth status --hostname github.com
+gh auth setup-git --hostname github.com
+gh config get git_protocol
+```
+
+정상 기준:
+
+- 로그인한 GitHub 계정이 표시된다.
+- Git protocol이 `https`이다.
+- `gh auth setup-git`이 오류 없이 끝난다. [R26]
+
+## 10.2 자격증명 저장 위치 확인
+
+일부 Linux 환경에는 시스템 credential store가 없어 GitHub CLI가 토큰을 파일에 저장할 수 있습니다. `gh auth status`로 저장 상태를 확인합니다. [R25]
+
+다음 경로는 절대 저장소에 복사하거나 commit하지 않습니다.
+
+```text
+~/.config/gh/
+```
+
+학교 또는 공동 사용 장비에서는 작업 종료 후 로그아웃을 검토합니다.
+
+```bash
+# [Ubuntu]
+gh auth logout --hostname github.com
+```
+
+로그아웃 후에는 다음 작업 전에 다시 인증해야 합니다.
+
+## 10.3 [선택] SSH 방식
+
+이미 Mac 계정에 GitHub SSH 키와 SSH agent가 안전하게 구성된 경우에만 사용합니다.
+
+```bash
+# [Ubuntu]
+echo "$SSH_AUTH_SOCK"
+ssh -T git@github.com
+```
+
+GitHub CLI protocol을 SSH로 바꾸려면:
+
+```bash
+# [Ubuntu]
+gh auth login \
+  --hostname github.com \
+  --git-protocol ssh \
+  --web
+```
+
+한 저장소에서는 HTTPS와 SSH 사용법을 중간에 반복적으로 혼합하지 않습니다. [R23][R25]
+
+---
+
+# 11. 저장소 clone과 상태 확인
+
+## 11.1 `gh repo clone` 사용
+
+```bash
+# [Ubuntu]
+cd ~/codyssey-training
+
+gh repo clone MetaStudy999/codyssey-training-e1-1
+cd codyssey-training-e1-1
+```
+
+`gh repo clone OWNER/REPO`는 인증 설정의 Git protocol을 사용합니다. [R27]
+
+## 11.2 Git 사용자 정보
+
+```bash
+# [Ubuntu]
+git config --global user.name
+git config --global user.email
+git config --global init.defaultBranch
+```
+
+값이 없다면 설정합니다.
+
+```bash
+# [Ubuntu]
 git config --global user.name "YOUR_NAME"
 git config --global user.email "YOUR_EMAIL"
 git config --global init.defaultBranch main
 ```
 
-Git 초기 설정과 GitHub 인증 방식은 GitHub 공식 문서를 기준으로 확인합니다. [R17]
+공개 스크린샷에서 이메일 노출 여부를 확인합니다.
 
-## 9.2 저장소 clone
-
-```bash
-cd ~/codyssey-training
-
-git clone https://github.com/MetaStudy999/codyssey-training-e1-1.git
-cd codyssey-training-e1-1
-```
-
-## 9.3 상태 확인
+## 11.3 저장소 확인
 
 ```bash
+# [Ubuntu]
 pwd
-git status
+git status -sb
 git branch --show-current
 git remote -v
-ls -la
+gh repo view --web
 ```
 
 정상 기준:
 
-- 현재 경로: `~/codyssey-training/codyssey-training-e1-1`
-- 현재 브랜치: `main`
-- 원격 저장소: `MetaStudy999/codyssey-training-e1-1`
+- 경로: `~/codyssey-training/codyssey-training-e1-1`
+- branch: `main`
+- remote: `MetaStudy999/codyssey-training-e1-1`
 
 ---
 
-# 10. 환경 기준선 기록
+# 12. Git 상태 모델 이해
 
-```bash
-mkdir -p docs/screenshots/{environment,terminal,permissions,docker,port,mount,volume,github}
-touch docs/environment.md
+```text
+파일 수정
+  ↓ git diff
+Working tree
+  ↓ git add
+Staging area
+  ↓ git commit
+Local repository
+  ↓ git push
+Remote branch
+  ↓ Pull Request 검토·merge
+Default branch(main)
 ```
 
-## 10.1 [Ubuntu] 수집 명령
+## 12.1 항상 반복할 상태 확인 루프
+
+```bash
+# [Ubuntu: 저장소 루트]
+git status -sb
+git diff --stat
+git diff
+```
+
+staging 후:
+
+```bash
+git status -sb
+git diff --cached --stat
+git diff --cached
+```
+
+commit 후:
+
+```bash
+git log -1 --stat
+git log --oneline --graph --decorate --all -10
+```
+
+원격 상태:
+
+```bash
+git branch -vv
+git remote -v
+gh pr status --conflict-status
+```
+
+> `git status`는 단순 확인 명령이 아니라, add·commit·push 전후에 작업 범위를 검증하는 핵심 명령입니다. [R14][R28]
+
+---
+
+# 13. 브랜치 운영 원칙
+
+## 13.1 `main`의 역할
+
+- 평가 가능한 상태를 유지한다.
+- 실행되지 않는 중간 작업을 직접 push하지 않는다.
+- 작업은 별도 브랜치에서 수행한다.
+- PR 검토 후 `main`에 병합한다.
+
+## 13.2 브랜치 이름 예시
+
+```text
+docs/environment-baseline
+feat/docker-web
+feat/volume-persistence
+fix/docker-link
+fix/port-conflict
+docs/final-evidence
+```
+
+## 13.3 새 작업 시작
+
+```bash
+# [Ubuntu]
+git switch main
+git pull --ff-only origin main
+git switch -c docs/environment-baseline
+```
+
+확인:
+
+```bash
+git status -sb
+git branch -vv
+```
+
+`--ff-only`는 의도하지 않은 merge commit 생성을 방지합니다.
+
+## 13.4 한 브랜치의 범위
+
+좋은 범위:
+
+- 환경 기준선 문서화
+- Docker 웹 서버 구현
+- 볼륨 실습과 증거
+- 최종 문서 정리
+
+나쁜 범위:
+
+- 환경, Dockerfile, 보너스 Compose, unrelated 파일을 한 PR에 모두 섞음
+- 오류 수정과 대규모 문서 개편을 이유 없이 함께 처리
+
+---
+
+# 14. `git add` 방법과 안전한 staging
+
+`git add`는 파일을 GitHub에 보내는 명령이 아닙니다. 다음 commit에 포함할 내용을 staging area에 선택합니다. [R28]
+
+## 14.1 방법 A — 파일을 정확히 지정: 입문자 권장
+
+```bash
+git add README.md docs/environment.md
+```
+
+장점:
+
+- 실수로 다른 파일이 포함될 가능성이 낮다.
+- commit 목적이 명확해진다.
+
+## 14.2 방법 B — 디렉터리 단위
+
+```bash
+git add docs/screenshots/environment/
+```
+
+## 14.3 방법 C — 변경 일부만 선택
+
+하나의 파일에 서로 다른 목적의 수정이 섞였을 때 사용합니다.
+
+```bash
+git add -p E1-1-training.md
+```
+
+주요 선택:
+
+- `y`: 현재 hunk 추가
+- `n`: 제외
+- `s`: 더 작은 hunk로 분할
+- `q`: 종료
+
+## 14.4 방법 D — 추적 중인 파일의 수정·삭제만
+
+```bash
+git add -u
+```
+
+새 파일은 포함하지 않습니다.
+
+## 14.5 방법 E — 저장소의 모든 변경
+
+```bash
+git add -A
+```
+
+반드시 저장소 루트에서 `git status -sb`와 `git diff`를 먼저 확인합니다.
+
+> `git add .`은 현재 디렉터리를 기준으로 동작하므로, 초보자는 저장소 루트에서 `git add -A`를 사용하거나 파일명을 명시하는 편이 안전합니다.
+
+## 14.6 staging 확인
+
+```bash
+git status -sb
+git diff --cached --stat
+git diff --cached
+```
+
+## 14.7 잘못 올린 파일 staging 취소
+
+```bash
+git restore --staged <파일경로>
+```
+
+예:
+
+```bash
+git restore --staged docs/screenshots/private-account.png
+```
+
+파일의 실제 수정 내용은 유지되고 staging에서만 제거됩니다.
+
+## 14.8 권장하지 않는 방식
+
+```bash
+git commit -am "message"
+```
+
+이 명령은 새로 만든 untracked 파일을 포함하지 않으므로, 입문자가 증거 파일을 빠뜨리기 쉽습니다.
+
+---
+
+# 15. commit 작성과 기록 원칙
+
+## 15.1 commit 전 5단계
+
+```bash
+git status -sb
+git diff
+git add <파일 또는 경로>
+git diff --cached
+git commit -m "Docs: record OrbStack Ubuntu environment"
+```
+
+## 15.2 commit 메시지 접두어
+
+| 접두어 | 사용 예 |
+|---|---|
+| `Feat:` | Docker 웹 기능 또는 구성 추가 |
+| `Fix:` | 포트·링크·경로 오류 수정 |
+| `Docs:` | README, 로그, 트러블슈팅 문서 |
+| `Test:` | 검증 스크립트·테스트 결과 |
+| `Refactor:` | 동작은 유지하고 구조 정리 |
+| `Chore:` | 설정·정리 작업 |
+
+좋은 예:
+
+```text
+Docs: record OrbStack Ubuntu environment baseline
+Feat: add NGINX Dockerfile and static page
+Test: verify bind mount file updates
+Fix: avoid port collision during reproduction test
+```
+
+피해야 할 예:
+
+```text
+수정
+완료
+최종
+다시수정
+```
+
+## 15.3 한 commit에는 한 가지 목적
+
+권장 흐름:
+
+```text
+Commit 1: 환경 정보
+Commit 2: 터미널·권한 실습
+Commit 3: Docker 기본 운영
+Commit 4: Dockerfile과 웹 파일
+Commit 5: 포트 매핑 증거
+Commit 6: 바인드 마운트 증거
+Commit 7: 볼륨 영속성 증거
+Commit 8: 트러블슈팅
+Commit 9: 테스트·증거 인덱스
+Commit 10: 최종 README
+```
+
+## 15.4 방금 한 commit 수정
+
+아직 push하지 않았고 메시지만 잘못 작성했다면:
+
+```bash
+git commit --amend
+```
+
+이미 다른 사람과 공유한 commit은 입문자가 임의로 amend하거나 history를 재작성하지 않습니다.
+
+---
+
+# 16. push 방법과 원격 상태 확인
+
+## 16.1 첫 push
+
+```bash
+git push -u origin docs/environment-baseline
+```
+
+`-u`는 로컬 브랜치와 원격 브랜치의 upstream을 연결합니다.
+
+## 16.2 이후 push
+
+```bash
+git push
+```
+
+## 16.3 push 전후 확인
+
+```bash
+git status -sb
+git log --oneline --decorate -5
+git push
+git status -sb
+git branch -vv
+```
+
+## 16.4 강제 push 금지
+
+입문자는 다음 명령을 사용하지 않습니다.
+
+```text
+git push --force
+git push -f
+```
+
+공유 브랜치 history를 덮어쓸 수 있습니다.
+
+## 16.5 현재 GitHub 현황
+
+```bash
+gh status
+gh pr status --conflict-status
+gh pr list --state open
+```
+
+---
+
+# 17. GitHub CLI로 Pull Request 생성
+
+## 17.1 Draft PR을 일찍 만드는 이유
+
+- 작업 목적을 먼저 기록할 수 있다.
+- 진행상황과 commit이 PR에 누적된다.
+- 변경 파일과 diff를 지속적으로 확인할 수 있다.
+- 완성 전에는 Ready for review로 오인되지 않는다.
+
+## 17.2 PR 본문 파일 작성
+
+```bash
+cat > /tmp/e1-1-pr-body.md <<'EOF'
+## 작업 목적
+
+OrbStack Ubuntu 24.04 환경 기준선과 검증 결과를 기록합니다.
+
+## 변경 내용
+
+- [x] 환경 정보 작성
+- [x] Docker 연결 확인
+- [ ] 스크린샷 정리
+- [ ] clean clone 재현
+
+## 검증 방법
 
 ```bash
 cat /etc/os-release
-uname -a
-uname -m
-printf '%s\n' "$SHELL"
-git --version
-docker --version
-docker context show
+docker version
 docker info
-pwd
+docker run --rm hello-world
 ```
 
-## 10.2 [macOS] 수집 명령
+## 증거 위치
+
+- docs/environment.md
+- docs/screenshots/environment/
+
+## 관련 요구사항
+
+- ENV-01
+- ENV-02
+EOF
+```
+
+## 17.3 Draft PR 생성 — 권장
 
 ```bash
-sw_vers
-uname -m
-orb version
-orb list
-docker version
-docker context show
+gh pr create \
+  --draft \
+  --base main \
+  --head docs/environment-baseline \
+  --title "Docs: record OrbStack Ubuntu environment" \
+  --body-file /tmp/e1-1-pr-body.md
 ```
 
-## 10.3 기록 템플릿
+PR URL이 출력됩니다. `gh pr create`는 현재 branch가 push되지 않은 경우 push 또는 fork 관련 안내를 표시할 수 있으므로, 이 문서에서는 먼저 `git push -u`를 수행합니다. [R29]
 
-```markdown
-# 실행 환경
+## 17.4 간단한 대안
 
-## macOS 호스트
-- Mac 모델:
-- CPU 아키텍처:
-- macOS 버전:
-- OrbStack 버전:
-- Docker context:
+commit 내용을 바탕으로 제목과 본문을 채우려면:
 
-## OrbStack Ubuntu
-- machine 이름: codyssey-training
-- 배포판: Ubuntu 24.04 LTS
-- CPU 아키텍처:
-- Shell:
-- Git 버전:
-- Docker CLI 경로:
-- Docker 버전:
-- 작업 경로:
-- 확인 날짜:
+```bash
+gh pr create --draft --base main --fill
+```
+
+초보자에게는 명시적인 `--title`과 `--body-file` 방식이 더 안전합니다.
+
+## 17.5 Issue와 연결 — 선택
+
+먼저 작업 Issue를 만들 수 있습니다.
+
+```bash
+gh issue create \
+  --title "E1-1 Docker 환경 및 증거 정리" \
+  --body "환경, Docker, 문서 증거를 단계별로 완료한다."
+```
+
+PR 본문에 다음을 작성하면 merge 시 Issue를 자동으로 닫을 수 있습니다.
+
+```text
+Closes #12
 ```
 
 ---
 
-# 11. 터미널 기본 조작
+# 18. PR 진행상태·diff·검사·리뷰 관리
 
-GNU Coreutils 공식 문서는 `pwd`, `ls`, `mkdir`, `touch`, `cp`, `mv`, `rm`, `rmdir`, `cat`, `chmod` 등 기본 명령의 기준 문서입니다. [R16]
-
-## 11.1 위치와 목록
+## 18.1 PR 상태 확인
 
 ```bash
+gh pr status --conflict-status
+gh pr view
+gh pr view --comments
+gh pr view --web
+```
+
+`gh pr status`는 관련 PR, CI 검사, 리뷰 상태 등을 요약합니다. [R30]
+
+## 18.2 변경 파일과 diff 확인
+
+```bash
+gh pr diff --name-only
+gh pr diff
+gh pr diff --web
+```
+
+확인 항목:
+
+- 의도하지 않은 파일이 포함됐는가
+- 토큰·이메일·내부 주소가 노출됐는가
+- 스크린샷에 민감정보가 있는가
+- 임시 파일과 대용량 로그가 포함됐는가
+- 문서의 명령과 실제 파일 구성이 일치하는가
+
+## 18.3 PR 생성 후 추가 수정
+
+PR을 닫고 다시 만들 필요가 없습니다.
+
+```bash
+# 파일 수정 후
+git status -sb
+git diff
+git add <파일>
+git diff --cached
+git commit -m "Docs: add environment verification evidence"
+git push
+```
+
+같은 branch에 push하면 기존 PR이 자동으로 갱신됩니다.
+
+## 18.4 PR 본문 갱신
+
+```bash
+gh pr edit --body-file /tmp/e1-1-pr-body.md
+```
+
+제목 변경:
+
+```bash
+gh pr edit --title "Docs: complete OrbStack environment evidence"
+```
+
+## 18.5 검사 상태 확인
+
+GitHub Actions 또는 필수 검사가 있는 경우:
+
+```bash
+gh pr checks
+gh pr checks --watch
+```
+
+검사가 없는 저장소에서는 표시할 항목이 없을 수 있습니다. `gh pr checks --watch`는 완료될 때까지 상태를 갱신합니다. [R31]
+
+## 18.6 Draft를 Ready로 전환
+
+다음 조건을 만족한 뒤 실행합니다.
+
+- PR 본문 체크리스트 완료
+- `git status -sb`가 clean
+- `gh pr diff` 검토 완료
+- 필수 테스트 완료
+- 민감정보 점검 완료
+
+```bash
+gh pr ready
+```
+
+다시 Draft로 돌리려면:
+
+```bash
+gh pr ready --undo
+```
+
+## 18.7 base branch 변경 반영
+
+다른 PR이 먼저 merge되어 `main`이 변경되었다면 현재 PR branch를 갱신합니다.
+
+### GitHub CLI 방식
+
+```bash
+gh pr update-branch
+```
+
+### 로컬 merge 방식 — 기록 보존에 유리
+
+```bash
+git fetch origin
+git merge origin/main
+git push
+```
+
+입문자는 공유한 PR branch에서 무분별한 rebase와 force push를 피합니다.
+
+## 18.8 동료의 PR 확인
+
+```bash
+gh pr checkout <PR번호>
+gh pr view <PR번호>
+gh pr diff <PR번호>
+```
+
+리뷰 의견:
+
+```bash
+gh pr review <PR번호> \
+  --comment \
+  --body "확인한 기능과 재현 결과를 구체적으로 작성합니다."
+```
+
+자신의 PR을 자신이 승인하는 방식으로 검토를 대체하지 않습니다.
+
+---
+
+# 19. PR 병합 방식과 작업 정리
+
+## 19.1 병합 전 최종 확인
+
+```bash
+git status -sb
+gh pr view
+gh pr diff --name-only
+gh pr checks
+gh pr status --conflict-status
+```
+
+## 19.2 세 가지 병합 방식
+
+| 방식 | 명령 | 특징 |
+|---|---|---|
+| Merge commit | `--merge` | branch의 개별 commit과 병합 지점을 보존 |
+| Squash | `--squash` | PR 전체를 main의 commit 하나로 압축 |
+| Rebase | `--rebase` | 개별 commit을 main 위에 선형으로 반영 |
+
+### 이 교육과정의 권장 방식
+
+의미 있는 commit 이력을 학습하고 확인하려면 다음을 사용합니다.
+
+```bash
+gh pr merge --merge --delete-branch
+```
+
+작은 수정 commit이 지나치게 많고 PR 단위만 남기려면 선택적으로 사용합니다.
+
+```bash
+gh pr merge --squash --delete-branch
+```
+
+병합 정책은 저장소 설정과 리뷰 규칙을 우선합니다. 필요한 검사를 우회하기 위해 `--admin`을 사용하지 않습니다. [R32]
+
+## 19.3 병합 후 로컬 정리
+
+```bash
+git switch main
+git pull --ff-only origin main
+git fetch --prune
+git branch -vv
+```
+
+`gh pr merge --delete-branch`가 로컬 branch를 삭제하지 못한 경우:
+
+```bash
+git branch -d <작업브랜치>
+```
+
+## 19.4 기록 확인
+
+```bash
+git log --oneline --graph --decorate --all -20
+gh pr list --state merged --limit 10
+```
+
+평가 대상인 Default branch에 변경이 실제로 반영됐는지 확인합니다.
+
+---
+
+# 20. 실수 복구와 충돌 예방
+
+## 20.1 staging만 취소
+
+```bash
+git restore --staged <파일>
+```
+
+## 20.2 수정 전 상태로 되돌리기 — 주의
+
+```bash
+git restore <파일>
+```
+
+commit되지 않은 수정이 사라질 수 있으므로 `git diff`를 먼저 확인합니다.
+
+## 20.3 잘못된 branch에서 작업했을 때
+
+commit 전이라면 새 branch를 만들 수 있습니다.
+
+```bash
+git switch -c fix/move-uncommitted-work
+```
+
+수정 내용은 새 branch에 그대로 유지됩니다.
+
+## 20.4 push가 거절될 때
+
+먼저 원격 상태를 확인합니다.
+
+```bash
+git fetch origin
+git status -sb
+git branch -vv
+git log --oneline --graph --decorate --all -15
+```
+
+`main`에서 작업 중이라면:
+
+```bash
+git switch main
+git pull --ff-only origin main
+```
+
+작업 branch의 PR base가 바뀌었다면 18.7의 branch update 절차를 사용합니다. 오류를 무시하고 force push하지 않습니다.
+
+## 20.5 commit하지 않은 파일 임시 보관 — 선택
+
+```bash
+git stash push -u -m "WIP before branch update"
+git stash list
+```
+
+복원:
+
+```bash
+git stash pop
+```
+
+stash도 충돌이 발생할 수 있으므로 장기 보관소로 사용하지 않습니다.
+
+---
+
+# 21. 터미널 기본 조작
+
+```bash
+# [Ubuntu]
+cd ~/codyssey-training/codyssey-training-e1-1
+mkdir -p practice/source
+cd practice
+
 pwd
 ls
 ls -la
-```
-
-## 11.2 생성·복사·이동·삭제
-
-```bash
-mkdir -p practice/source
-cd practice
 
 touch sample.txt
 echo "Codyssey E1-1" > sample.txt
@@ -660,26 +1342,18 @@ rm archive/renamed.txt
 rmdir archive
 ```
 
-## 11.3 기록 항목
+기록할 내용:
 
-- 명령 입력과 출력
-- 작업 전후의 `ls -la`
-- 절대 경로와 상대 경로 사용 예
-- 오류가 발생했다면 오류 원문
+- 명령과 출력
+- 작업 전후 `ls -la`
+- 절대 경로와 상대 경로
+- 오류 원문
 
-## 11.4 설명 질문
-
-1. `pwd`와 `ls`는 무엇이 다른가?
-2. 절대 경로와 상대 경로는 무엇이 다른가?
-3. `cp`와 `mv`는 무엇이 다른가?
-4. `rm`은 왜 주의해야 하는가?
-5. `.`과 `..`은 무엇인가?
+GNU Coreutils 문서를 기준으로 기본 명령을 확인합니다. [R16]
 
 ---
 
-# 12. 파일과 디렉터리 권한
-
-## 12.1 권한 계산
+# 22. 파일·디렉터리 권한
 
 ```text
 r = read    = 4
@@ -692,11 +1366,10 @@ x = execute = 1
 | `755` | `rwx` | `r-x` | `r-x` |
 | `644` | `rw-` | `r--` | `r--` |
 
-`chmod`는 파일의 접근 권한을 변경하는 명령입니다. 구체적인 모드 해석과 옵션은 GNU Coreutils 공식 문서를 따릅니다. [R15][R16]
-
-## 12.2 파일 권한 변경
+## 22.1 파일
 
 ```bash
+# [Ubuntu]
 cd ~/codyssey-training/codyssey-training-e1-1/practice
 
 touch permission-file.txt
@@ -707,7 +1380,7 @@ chmod 600 permission-file.txt
 ls -l permission-file.txt
 ```
 
-## 12.3 디렉터리 권한 변경
+## 22.2 디렉터리
 
 ```bash
 mkdir -p permission-dir
@@ -718,68 +1391,54 @@ chmod 700 permission-dir
 ls -ld permission-dir
 ```
 
-## 12.4 기록 항목
-
-- 변경 전 권한
-- 실행한 `chmod`
-- 변경 후 권한
-- 숫자를 계산한 방법
-- 파일과 디렉터리에서 `x`의 의미 차이
+변경 전후와 권한 선택 이유를 `docs/terminal-and-permissions.md`에 기록합니다. [R15][R16]
 
 ---
 
-# 13. Docker 기본 점검
+# 23. Docker 이미지·컨테이너 운영
+
+## 23.1 기본 상태
 
 ```bash
-cd ~/codyssey-training/codyssey-training-e1-1
-```
-
-## 13.1 버전과 Engine
-
-```bash
+# [Ubuntu]
 docker --version
 docker version
 docker info
-```
-
-## 13.2 상태 확인
-
-```bash
 docker images
 docker ps
 docker ps -a
 docker stats --no-stream
 ```
 
-Docker 명령의 정확한 옵션은 Docker CLI 공식 레퍼런스를 기준으로 확인합니다. [R7]
-
----
-
-# 14. 이미지와 컨테이너 운영
-
-## 14.1 hello-world
+## 23.2 hello-world
 
 ```bash
+docker rm -f e1-1-hello 2>/dev/null || true
 docker run --name e1-1-hello hello-world
-docker ps
 docker ps -a
 docker logs e1-1-hello
 ```
 
-같은 이름이 이미 있으면 확인 후 제거합니다.
+## 23.3 Ubuntu 컨테이너 — 안정적인 방식
+
+주 프로세스가 계속 실행되도록 `sleep infinity`를 사용합니다.
 
 ```bash
-docker rm e1-1-hello
-docker run --name e1-1-hello hello-world
+docker rm -f e1-1-ubuntu 2>/dev/null || true
+
+docker run -d \
+  --name e1-1-ubuntu \
+  ubuntu:24.04 \
+  sleep infinity
 ```
 
-## 14.2 Ubuntu 컨테이너
+내부 진입:
 
 ```bash
-docker run -it --name e1-1-ubuntu ubuntu:24.04 bash
+docker exec -it e1-1-ubuntu bash
 ```
 
-컨테이너 안에서:
+컨테이너 내부:
 
 ```bash
 pwd
@@ -788,43 +1447,27 @@ echo "Hello from Ubuntu container"
 exit
 ```
 
-Ubuntu machine 셸에서:
+호스트 Ubuntu:
 
 ```bash
 docker ps
-docker ps -a
-docker start e1-1-ubuntu
-docker exec e1-1-ubuntu bash -lc 'echo "docker exec test" && ls -la /'
 docker logs e1-1-ubuntu
-```
-
-## 14.3 중지·시작·삭제
-
-```bash
 docker stop e1-1-ubuntu
 docker start e1-1-ubuntu
 docker rm -f e1-1-ubuntu
 ```
 
-## 14.4 설명 질문
-
-- 이미지와 컨테이너의 차이
-- `docker ps`와 `docker ps -a`의 차이
-- `docker run`과 `docker start`의 차이
-- `docker exec`의 사용 목적
-- 컨테이너 삭제 후에도 이미지가 남는 이유
-
 ---
 
-# 15. Dockerfile 기반 웹 서버
+# 24. Dockerfile 기반 웹 서버
 
-Dockerfile은 이미지를 조립하는 명령을 기록한 텍스트 문서입니다. `FROM`, `COPY`, `EXPOSE`의 정확한 의미는 Dockerfile 공식 레퍼런스를 따릅니다. [R8]
-
-## 15.1 웹 페이지 작성
+## 24.1 웹 파일
 
 ```bash
+# [Ubuntu]
 cd ~/codyssey-training/codyssey-training-e1-1
 mkdir -p site
+
 cat > site/index.html <<'EOF'
 <!doctype html>
 <html lang="ko">
@@ -841,7 +1484,7 @@ cat > site/index.html <<'EOF'
 EOF
 ```
 
-## 15.2 Dockerfile 작성
+## 24.2 Dockerfile
 
 ```bash
 cat > Dockerfile <<'EOF'
@@ -856,23 +1499,18 @@ EXPOSE 80
 EOF
 ```
 
-## 15.3 `.dockerignore`
-
-`.dockerignore`는 빌드 컨텍스트에서 불필요한 파일을 제외합니다. [R9]
+## 24.3 ignore 파일
 
 ```bash
 cat > .dockerignore <<'EOF'
 .git
-.gitignore
+.github
 docs
 practice
+bind-test
 *.log
 EOF
-```
 
-## 15.4 `.gitignore`
-
-```bash
 cat > .gitignore <<'EOF'
 .DS_Store
 *.log
@@ -882,7 +1520,7 @@ cat > .gitignore <<'EOF'
 EOF
 ```
 
-## 15.5 이미지 빌드와 확인
+## 24.4 빌드
 
 ```bash
 docker build -t codyssey-e1-1-web:1.0 .
@@ -890,58 +1528,46 @@ docker images
 docker image inspect codyssey-e1-1-web:1.0
 ```
 
-## 15.6 설명 질문
-
-- `FROM`의 역할
-- `COPY`의 역할
-- `EXPOSE 80`과 실제 포트 공개의 차이
-- 이미지 태그 `1.0`의 목적
-- `.dockerignore`의 필요성
+Dockerfile과 빌드 컨텍스트의 기준은 공식 문서를 사용합니다. [R8][R9]
 
 ---
 
-# 16. 포트 매핑과 접속 검증
-
-Docker 공식 문서에서 `-p 8080:80`은 Docker 호스트의 8080 포트를 컨테이너의 80 포트에 매핑합니다. [R10]
-
-## 16.1 컨테이너 실행
+# 25. 포트 매핑
 
 ```bash
+# [Ubuntu]
+docker rm -f e1-1-web 2>/dev/null || true
+
 docker run -d \
   --name e1-1-web \
   -p 8080:80 \
   codyssey-e1-1-web:1.0
 ```
 
-## 16.2 상태·로그·포트
+검증:
 
 ```bash
 docker ps
 docker logs e1-1-web
 docker port e1-1-web
-```
-
-## 16.3 Ubuntu에서 접속
-
-```bash
 curl http://localhost:8080
 ```
 
-## 16.4 Mac 브라우저에서 접속
+Mac 브라우저:
 
 ```text
 http://localhost:8080
 ```
 
-스크린샷에는 주소창, 포트, 웹 페이지가 함께 보여야 합니다.
+스크린샷에는 주소창, 포트, 웹 응답을 함께 포함합니다. `-p 8080:80`은 Docker host의 8080을 컨테이너의 80에 연결합니다. [R10]
 
-## 16.5 포트 충돌
+포트 충돌 확인:
 
 ```bash
 docker ps --format 'table {{.Names}}\t{{.Ports}}'
 ```
 
-기존 서비스를 임의 삭제하지 말고 다른 포트를 선택합니다.
+기존 컨테이너를 임의 삭제하지 않고 대체 포트를 사용합니다.
 
 ```bash
 docker run -d \
@@ -952,83 +1578,77 @@ docker run -d \
 
 ---
 
-# 17. 바인드 마운트
+# 26. 바인드 마운트
 
-바인드 마운트는 호스트의 파일 또는 디렉터리를 컨테이너에 직접 연결합니다. 호스트 디렉터리 구조에 의존하며 기본적으로 쓰기 권한이 있으므로, 필요하면 읽기 전용으로 제한합니다. [R11]
-
-## 17.1 기존 컨테이너 정리
+최종 제출용 `site/index.html`을 덮어쓰지 않도록 별도 디렉터리를 사용합니다.
 
 ```bash
-docker rm -f e1-1-web 2>/dev/null || true
-```
+# [Ubuntu]
+cd ~/codyssey-training/codyssey-training-e1-1
+mkdir -p bind-test
 
-## 17.2 바인드 마운트 실행
-
-```bash
-docker run -d \
-  --name e1-1-bind \
-  -p 8080:80 \
-  -v "$PWD/site:/usr/share/nginx/html:ro" \
-  nginx:alpine
-```
-
-## 17.3 최초 화면
-
-```bash
-curl http://localhost:8080
-```
-
-## 17.4 파일 변경
-
-```bash
-cat > site/index.html <<'EOF'
+cat > bind-test/index.html <<'EOF'
 <!doctype html>
 <html lang="ko">
-<head>
-  <meta charset="utf-8">
-  <title>Bind Mount Test</title>
-</head>
-<body>
-  <h1>바인드 마운트 반영 성공</h1>
-  <p>이미지를 다시 빌드하지 않고 파일 변경을 반영했습니다.</p>
-</body>
+<head><meta charset="utf-8"><title>Bind Test</title></head>
+<body><h1>바인드 마운트 최초 화면</h1></body>
 </html>
 EOF
 ```
 
-## 17.5 변경 확인
+실행:
+
+```bash
+docker rm -f e1-1-web e1-1-bind 2>/dev/null || true
+
+docker run -d \
+  --name e1-1-bind \
+  -p 8080:80 \
+  -v "$PWD/bind-test:/usr/share/nginx/html:ro" \
+  nginx:alpine
+```
+
+최초 확인:
 
 ```bash
 curl http://localhost:8080
 ```
 
-브라우저도 새로고침합니다.
+파일 변경:
 
-## 17.6 기록 항목
+```bash
+cat > bind-test/index.html <<'EOF'
+<!doctype html>
+<html lang="ko">
+<head><meta charset="utf-8"><title>Bind Test</title></head>
+<body><h1>바인드 마운트 변경 반영 성공</h1></body>
+</html>
+EOF
+```
 
-- 실행 명령
-- 변경 전 화면
-- 수정한 파일
-- 변경 후 화면
-- 다시 빌드하지 않아도 반영된 이유
-- `:ro`의 의미
+재확인:
+
+```bash
+curl http://localhost:8080
+```
+
+이미지 재빌드 없이 바뀐 이유와 `:ro`의 의미를 기록합니다. [R11]
 
 ---
 
-# 18. Docker 볼륨 영속성
-
-Docker 볼륨은 Docker가 생성·관리하는 영속 저장소이며, 사용하는 컨테이너가 제거되어도 데이터가 유지될 수 있습니다. [R12][R13]
-
-## 18.1 볼륨 생성
+# 27. Docker 볼륨 영속성
 
 ```bash
+# [Ubuntu]
 docker volume create e1-1-data
 docker volume ls
 ```
 
-## 18.2 첫 번째 컨테이너
+첫 번째 컨테이너:
 
 ```bash
+docker rm -f e1-1-volume-1 2>/dev/null || true
+
 docker run -d \
   --name e1-1-volume-1 \
   -v e1-1-data:/data \
@@ -1036,22 +1656,24 @@ docker run -d \
   sleep infinity
 ```
 
-## 18.3 데이터 작성
+데이터 작성:
 
 ```bash
 docker exec e1-1-volume-1 \
   bash -lc 'echo "persistent data" > /data/result.txt && cat /data/result.txt'
 ```
 
-## 18.4 첫 번째 컨테이너 삭제
+컨테이너 삭제:
 
 ```bash
 docker rm -f e1-1-volume-1
 ```
 
-## 18.5 새 컨테이너 연결
+새 컨테이너:
 
 ```bash
+docker rm -f e1-1-volume-2 2>/dev/null || true
+
 docker run -d \
   --name e1-1-volume-2 \
   -v e1-1-data:/data \
@@ -1059,125 +1681,188 @@ docker run -d \
   sleep infinity
 ```
 
-## 18.6 데이터 확인
+데이터 확인:
 
 ```bash
 docker exec e1-1-volume-2 cat /data/result.txt
 ```
 
-`persistent data`가 출력되어야 합니다.
-
-## 18.7 설명 질문
-
-- 컨테이너 삭제 후 데이터가 남은 이유
-- 바인드 마운트와 볼륨의 저장 위치 관리 주체
-- 소스코드 공유와 장기 데이터 저장에 적합한 방식
+`persistent data`가 출력되어야 합니다. [R12][R13]
 
 ---
 
-# 19. Git·GitHub·VS Code
+# 28. Git·PR 현황 기록 문서
 
-## 19.1 Git 상태 확인
+`docs/git-workflow.md`를 작성합니다.
 
-```bash
-git config --global user.name
-git config --global user.email
-git config --global init.defaultBranch
-git status
-git branch --show-current
-git remote -v
-```
+```markdown
+# Git·GitHub 작업 기록
 
-Git 명령의 정확한 동작은 Git 공식 레퍼런스를 기준으로 확인합니다. [R14]
+## 저장소
+- Remote:
+- Default branch:
+- Git protocol:
+- gh 로그인 계정:
 
-## 19.2 VS Code 실행
+## 작업 기록
 
-OrbStack은 일부 macOS 명령을 Linux machine에서 사용할 수 있도록 연결하며 `code`가 기본 연결되는 경우가 있습니다. [R3]
+| 날짜 | 브랜치 | 작업 목적 | 주요 파일 | commit SHA | PR | 상태 |
+|---|---|---|---|---|---|---|
+| YYYY-MM-DD | docs/environment-baseline | 환경 기록 | docs/environment.md | abc1234 | #1 | merged |
 
-```bash
-command -v code
-code .
-```
-
-없으면 Mac에 VS Code가 설치되어 있는지 확인한 뒤:
+## 현재 상태
 
 ```bash
-mac link code
-hash -r
-code .
+$ git status -sb
+
+$ git branch -vv
+
+$ git log --oneline --graph --decorate --all -15
+
+$ gh pr status --conflict-status
 ```
 
-VS Code의 Git·GitHub 연동 방식은 VS Code 공식 문서를 참고합니다. [R21][R22]
-
-## 19.3 권장 커밋 계획
-
-```text
-1. Docs: add OrbStack Ubuntu environment baseline
-2. Docs: record terminal and permission practice
-3. Docs: record Docker basic operations
-4. Feat: add custom NGINX Dockerfile and web content
-5. Docs: add port mapping verification
-6. Docs: add bind mount verification
-7. Docs: add Docker volume persistence verification
-8. Docs: add troubleshooting cases
-9. Docs: add test results and evidence index
-10. Docs: finalize E1-1 submission
+## 병합 결과
+- PR URL:
+- 병합 방식:
+- merge commit 또는 squash commit:
+- Default branch 반영 확인:
 ```
 
-## 19.4 commit과 push
+## 단계별 현황 명령
 
 ```bash
-git add .
-git status
-git diff --cached
-git commit -m "Docs: record E1-1 workstation practice"
-git push origin main
+git status -sb
+git diff --stat
+git diff --cached --stat
+git log --oneline --graph --decorate --all -15
+git branch -vv
+gh status
+gh pr status --conflict-status
+gh pr list --state all --limit 20
 ```
+
+실제 출력에서 토큰·민감정보를 제거한 뒤 기록합니다.
 
 ---
 
-# 20. 보안과 민감정보
+# 29. 요구사항·테스트·증거 추적
 
-## 20.1 저장소에 포함하지 않을 정보
+`docs/requirement-traceability.md` 예시:
 
-- GitHub Personal Access Token
-- 비밀번호
-- SSH 개인키
-- 인증 코드
-- `.env`의 비밀값
-- 학교·회사 내부 시스템의 민감정보
+| ID | 요구사항 | 구현·실습 | 검증 명령 | 증거 | PR·commit | 상태 |
+|---|---|---|---|---|---|---|
+| ENV-01 | Ubuntu 24.04 | `codyssey-training` | `cat /etc/os-release` | environment | #1 / SHA | ⬜ |
+| ENV-02 | OrbStack Docker | command link | `docker version` | docker 화면 | #1 / SHA | ⬜ |
+| GH-01 | gh 인증 | GitHub CLI | `gh auth status` | git 문서 | #1 / SHA | ⬜ |
+| GH-02 | branch·PR | PR workflow | `gh pr status` | PR URL | #1 / SHA | ⬜ |
+| CLI-01 | 터미널 조작 | `practice/` | `pwd`, `ls -la` | terminal | PR / SHA | ⬜ |
+| PERM-01 | 권한 변경 | file·directory | `ls -l`, `ls -ld` | permissions | PR / SHA | ⬜ |
+| DOC-01 | Docker 점검 | Engine | `docker info` | docker | PR / SHA | ⬜ |
+| IMG-01 | 커스텀 이미지 | Dockerfile | `docker build` | build log | PR / SHA | ⬜ |
+| PORT-01 | 포트 매핑 | `8080:80` | `curl` | 브라우저 | PR / SHA | ⬜ |
+| MOUNT-01 | 바인드 마운트 | `bind-test/` | 변경 비교 | mount | PR / SHA | ⬜ |
+| VOL-01 | 볼륨 영속성 | `e1-1-data` | 삭제 전후 `cat` | volume | PR / SHA | ⬜ |
+| TS-01 | 문제 해결 2건 | troubleshooting | 재현·복구 | 문서 | PR / SHA | ⬜ |
+| SEC-01 | 민감정보 | 전체 | diff·grep | 점검 기록 | PR / SHA | ⬜ |
 
-## 20.2 commit 전 점검
+---
+
+# 30. clean clone 재현 시험
+
+기존 실습과 이름·포트가 충돌하지 않도록 별도 디렉터리와 포트를 사용합니다.
+
+## 30.1 기존 상태 확인
 
 ```bash
-git status
+# [Ubuntu]
+docker ps -a --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
+docker volume inspect e1-1-data
+```
+
+## 30.2 새 디렉터리 clone
+
+```bash
+cd ~
+mkdir -p ~/codyssey-reproduction
+cd ~/codyssey-reproduction
+
+gh repo clone MetaStudy999/codyssey-training-e1-1
+git -C codyssey-training-e1-1 status -sb
+cd codyssey-training-e1-1
+```
+
+## 30.3 별도 이름으로 재현
+
+```bash
+docker build -t codyssey-e1-1-web:retest .
+
+docker rm -f e1-1-retest 2>/dev/null || true
+
+docker run -d \
+  --name e1-1-retest \
+  -p 18080:80 \
+  codyssey-e1-1-web:retest
+
+curl http://localhost:18080
+```
+
+정상 기준:
+
+- 문서만 보고 빌드 성공
+- `18080`에서 웹 응답
+- 추가 설명 없이 실행 가능
+- 누락 파일 없음
+
+재현 결과를 `docs/test-results.md`에 기록하고 작업 branch에서 commit·push·PR 갱신합니다.
+
+---
+
+# 31. 보안과 민감정보
+
+commit 전:
+
+```bash
+git status -sb
+git diff
 git diff --cached
+
 git grep -n -i -E 'token|password|secret|private.?key' || true
-find . -maxdepth 3 -type f \( -name '.env' -o -name '*.pem' -o -name 'id_rsa' \)
+find . -maxdepth 4 -type f \
+  \( -name '.env' -o -name '*.pem' -o -name 'id_rsa' -o -name 'hosts.yml' \)
 ```
 
-## 20.3 노출 시 대응
+포함하면 안 되는 정보:
 
-1. 추가 push를 중단합니다.
-2. 노출된 비밀값을 즉시 폐기하거나 교체합니다.
-3. 파일 삭제만으로 끝내지 않습니다.
-4. Git 히스토리 제거 필요성을 검토합니다.
-5. 공개 문서에는 비밀값을 제외한 조치 과정만 기록합니다.
+- GitHub token
+- 비밀번호·인증 코드
+- SSH 개인키
+- `~/.config/gh/hosts.yml`
+- `.env` 비밀값
+- 학교·회사 내부 주소
 
-GitHub는 노출된 secret을 코드에서 삭제하는 것만으로는 충분하지 않으며, 우선 폐기·교체하고 필요하면 저장소 이력에서 제거하도록 안내합니다. [R19][R20]
+노출 시:
+
+1. 추가 push 중지
+2. 비밀값 폐기·교체
+3. Git history 제거 필요성 확인
+4. 공식 문서에 따라 조치
+5. 공개 기록에는 비밀값 자체를 쓰지 않음
+
+파일만 삭제하는 것으로는 이미 commit된 secret 문제가 해결되지 않을 수 있습니다. [R19][R20]
 
 ---
 
-# 21. 트러블슈팅
+# 32. 트러블슈팅
 
-`docs/troubleshooting.md`에 최소 2건을 기록합니다.
-
-## 21.1 표준 양식
+`docs/troubleshooting.md`에 최소 2건 작성합니다.
 
 ```markdown
 ## 문제 ID: TS-01
 
 - 발생 환경:
+- branch:
+- 관련 commit 또는 PR:
 - 실행 명령:
 - 오류 메시지 원문:
 - 재현 방법:
@@ -1187,238 +1872,142 @@ GitHub는 노출된 secret을 코드에서 삭제하는 것만으로는 충분�
 - 해결 또는 대안:
 - 해결 검증:
 - 재발 방지:
-- 참고한 공식 문서:
+- 참고 공식 문서:
 ```
 
-## 21.2 권장 주제
+권장 주제:
 
+- `gh auth login` 또는 credential 문제
+- push 권한·인증 오류
+- branch 또는 upstream 미설정
+- PR에 의도하지 않은 파일 포함
 - Docker Engine 연결 실패
-- Docker context가 `orbstack`이 아님
-- Ubuntu에서 Docker command link 실패
-- 포트 8080 충돌
-- 컨테이너 이름 중복
+- command link 오류
+- Docker build 경로 오류
+- 포트 충돌
 - 바인드 마운트 경로 오류
-- 파일 권한 오류
-- Git push 인증 실패
-
-## 21.3 좋은 기록의 기준
-
-- 오류 원문을 보존한다.
-- 추측과 확인된 사실을 분리한다.
-- 해결 명령뿐 아니라 해결된 이유를 설명한다.
-- 공식 문서 링크를 남긴다.
-- 같은 문제가 발생해도 재현·복구할 수 있다.
+- 컨테이너 이름 중복
 
 ---
 
-# 22. 요구사항·테스트·증거 추적
+# 33. 40시간 권장 학습계획
 
-`docs/requirement-traceability.md`를 작성합니다.
-
-| ID | 요구사항 | 구현·실습 | 검증 명령 | 증거 | 상태 |
-|---|---|---|---|---|---|
-| ENV-01 | Ubuntu 24.04 | `codyssey-training` | `cat /etc/os-release` | environment | ⬜ |
-| ENV-02 | OrbStack Docker | Docker link | `docker version` | Docker 화면 | ⬜ |
-| CLI-01 | 터미널 조작 | `practice/` | `pwd`, `ls -la` | terminal | ⬜ |
-| PERM-01 | 파일 권한 | permission file | `ls -l` | permissions | ⬜ |
-| PERM-02 | 디렉터리 권한 | permission dir | `ls -ld` | permissions | ⬜ |
-| DOC-01 | Docker 점검 | OrbStack Engine | `docker info` | docker | ⬜ |
-| DOC-02 | hello-world | container | `docker logs` | docker | ⬜ |
-| IMG-01 | 커스텀 이미지 | `Dockerfile` | `docker build` | build log | ⬜ |
-| PORT-01 | 포트 매핑 | `8080:80` | `curl` | 브라우저 | ⬜ |
-| MOUNT-01 | 바인드 마운트 | `site/` | 변경 비교 | mount | ⬜ |
-| VOL-01 | 볼륨 영속성 | `e1-1-data` | 삭제 전후 `cat` | volume | ⬜ |
-| GIT-01 | GitHub 연동 | `main` | `git remote -v` | GitHub | ⬜ |
-| TS-01 | 문제 해결 2건 | troubleshooting | 재현·복구 | 문서 | ⬜ |
-| SEC-01 | 민감정보 점검 | 전체 | `git diff --cached` | 점검 기록 | ⬜ |
-
----
-
-# 23. 결과 README 작성
-
-`E1-1-training.md`는 학습 지침서입니다. 평가용 결과는 `README.md` 또는 README에서 연결한 `docs/`에 기록합니다.
-
-## 23.1 README 권장 목차
-
-```text
-1. 프로젝트 개요
-2. 미션 목표
-3. 실행 환경
-4. OrbStack Ubuntu 구성
-5. OrbStack Docker 연동
-6. 터미널 조작 결과
-7. 권한 실습 결과
-8. Docker 기본 운영 결과
-9. Dockerfile과 커스텀 이미지
-10. 포트 매핑 결과
-11. 바인드 마운트 결과
-12. 볼륨 영속성 결과
-13. Git·GitHub·VS Code 연동
-14. 트러블슈팅
-15. 테스트 결과
-16. 증거 인덱스
-17. 보안 점검
-18. 회고와 제한사항
-19. 참고문헌
-```
-
-## 23.2 기록 원칙
-
-나쁜 예:
-
-```text
-Docker가 잘 실행되었다.
-```
-
-좋은 예:
-
-```bash
-$ docker context show
-orbstack
-
-$ docker run --rm hello-world
-Hello from Docker!
-```
-
-명령 입력과 출력 결과를 함께 기록합니다.
-
----
-
-# 24. 40시간 권장 학습계획
-
-| 단계 | 시간 | 학습 내용 | 결과물 |
+| 단계 | 시간 | 내용 | 결과물 |
 |---|---:|---|---|
 | 1 | 2시간 | 미션·용어·요구사항 | 요구사항 표 |
-| 2 | 4시간 | OrbStack·Ubuntu 생성 | 환경 기준선 |
-| 3 | 3시간 | OrbStack Docker 연결 | hello-world 증거 |
-| 4 | 4시간 | 터미널·경로 | CLI 로그 |
-| 5 | 3시간 | 권한 | 전후 비교 |
-| 6 | 5시간 | Docker 운영 | 운영 로그 |
-| 7 | 5시간 | Dockerfile·빌드 | 웹 이미지 |
-| 8 | 3시간 | 포트 매핑 | 접속 증거 |
-| 9 | 3시간 | 바인드 마운트 | 변경 증거 |
-| 10 | 3시간 | 볼륨 | 영속성 증거 |
-| 11 | 2시간 | Git·GitHub·VS Code | 연동 증거 |
-| 12 | 2시간 | 문제 해결·문서화 | 문제 2건 |
-| 13 | 1시간 | clean clone·모의평가 | 최종 점검 |
+| 2 | 3시간 | OrbStack·Ubuntu | 환경 기준선 |
+| 3 | 3시간 | Docker 연결·경로 시험 | hello-world·path test |
+| 4 | 3시간 | gh 설치·인증·clone | 인증·remote 증거 |
+| 5 | 4시간 | branch·add·commit·push | commit 기록 |
+| 6 | 3시간 | Draft PR·상태·diff·merge | PR 기록 |
+| 7 | 3시간 | 터미널·경로 | CLI 로그 |
+| 8 | 3시간 | 권한 | 전후 비교 |
+| 9 | 4시간 | Docker 운영 | 운영 로그 |
+| 10 | 4시간 | Dockerfile·포트 | 웹 이미지·접속 |
+| 11 | 3시간 | 바인드 마운트 | 변경 증거 |
+| 12 | 2시간 | 볼륨 영속성 | 삭제 전후 증거 |
+| 13 | 2시간 | 문서·트러블슈팅 | 문제 2건 |
+| 14 | 1시간 | clean clone·평가 준비 | 최종 점검 |
 | 합계 | 40시간 |  |  |
 
 ---
 
-# 25. 품질 게이트
+# 34. 품질 게이트
 
 ## Gate 0. 환경
 
 - [ ] OrbStack 실행
-- [ ] `codyssey-training` 존재
-- [ ] Ubuntu 24.04 확인
-- [ ] Ubuntu에서 `docker version` 정상
-- [ ] Docker context `orbstack`
-- [ ] 저장소 clone 완료
+- [ ] Ubuntu 24.04 `codyssey-training`
+- [ ] 네트워크 정상
+- [ ] `docker version`, `docker info`, `hello-world` 성공
+- [ ] Docker build·bind path 사전 시험 성공
 
-## Gate 1. 터미널·권한
+## Gate 1. GitHub CLI
 
-- [ ] 파일·디렉터리 생성·복사·이동·삭제
-- [ ] 파일 권한 변경
-- [ ] 디렉터리 권한 변경
-- [ ] `755`, `644` 설명 가능
+- [ ] `gh --version`
+- [ ] `gh auth status`
+- [ ] `gh auth setup-git`
+- [ ] `gh repo clone` 성공
+- [ ] remote와 계정 확인
 
-## Gate 2. Docker 운영
+## Gate 2. Git 작업
 
-- [ ] `docker --version`, `docker info`
-- [ ] `hello-world`
-- [ ] Ubuntu 컨테이너
-- [ ] `images`, `ps`, `ps -a`, `logs`, `stats`
+- [ ] `main` 최신화
+- [ ] 작업 branch 생성
+- [ ] `status → diff → add → cached diff → commit`
+- [ ] 의미 있는 commit 메시지
+- [ ] 첫 push의 `-u`
+- [ ] force push 미사용
 
-## Gate 3. Dockerfile·포트
+## Gate 3. Pull Request
 
-- [ ] Dockerfile 직접 작성
-- [ ] 이미지 빌드 성공
-- [ ] `8080:80` 성공
-- [ ] 주소창 포함 브라우저 캡처
+- [ ] Draft PR 생성
+- [ ] PR 본문·검증·증거 작성
+- [ ] `gh pr diff` 확인
+- [ ] checks·충돌 상태 확인
+- [ ] Ready 전환
+- [ ] 정책에 맞게 merge
+- [ ] Default branch 반영 확인
 
-## Gate 4. 스토리지
+## Gate 4. 미션 기능
 
-- [ ] 바인드 마운트 전후 비교
-- [ ] 볼륨 데이터 작성
-- [ ] 컨테이너 삭제 후 데이터 확인
+- [ ] 터미널·권한
+- [ ] Docker 기본 운영
+- [ ] Dockerfile
+- [ ] 포트 매핑
+- [ ] 바인드 마운트
+- [ ] 볼륨 영속성
 
 ## Gate 5. 제출
 
+- [ ] README와 docs 완성
 - [ ] 트러블슈팅 2건 이상
-- [ ] 공식 참고문헌 포함
+- [ ] 요구사항·증거·PR·commit 연결
 - [ ] 민감정보 없음
-- [ ] 이미지와 링크 정상
-- [ ] Default branch `main`
-- [ ] 최종 push
-- [ ] clean clone 재현 성공
+- [ ] clean clone 재현
+- [ ] Default branch 평가 가능
 
 ---
 
-# 26. 시험·동료평가 대비
+# 35. 시험·동료평가 대비
 
-## 26.1 시연 순서
+## 시연 순서
 
 1. 미션 목표
-2. macOS·OrbStack·Ubuntu 구조
-3. `codyssey-training` 확인
-4. Docker 연동 확인
-5. 환경 버전
-6. 터미널 조작
-7. 권한 변경
-8. 이미지와 컨테이너
-9. Dockerfile 빌드
-10. 포트 접속
-11. 바인드 마운트
-12. 볼륨 영속성
-13. Git 이력
-14. 트러블슈팅 2건
-15. 보안 점검
-16. 참고한 공식 문서
+2. OrbStack·Ubuntu·Docker 구조
+3. Docker 연결과 경로 사전 시험
+4. GitHub CLI 인증 방식
+5. branch 생성 이유
+6. add 방법과 staging 확인
+7. 의미 있는 commit 이력
+8. push와 upstream
+9. Draft PR 생성과 진행상태 관리
+10. PR diff·checks·merge 방식
+11. 터미널·권한
+12. Dockerfile·포트
+13. 바인드 마운트·볼륨
+14. 트러블슈팅
+15. clean clone
+16. 보안 점검
 
-## 26.2 예상 질문
+## 예상 질문
 
-1. OrbStack Linux machine과 Docker 컨테이너의 차이는 무엇인가?
-2. `ubuntu:noble`은 무엇인가?
-3. Ubuntu 안에 별도 Docker Engine을 설치하지 않은 이유는 무엇인가?
-4. Docker context `orbstack`의 의미는 무엇인가?
-5. 이미지와 컨테이너의 차이는 무엇인가?
-6. `-p 8080:80`을 설명하라.
-7. `FROM`, `COPY`, `EXPOSE`를 설명하라.
-8. 바인드 마운트와 볼륨을 비교하라.
-9. 컨테이너 삭제 후 볼륨 데이터가 남는 이유는 무엇인가?
-10. `755`, `644`를 설명하라.
-11. Git과 GitHub의 차이는 무엇인가?
-12. 공식 문서를 사용해 해결한 오류를 설명하라.
+1. `git add`와 `git commit`은 무엇이 다른가?
+2. `git add -p`, `git add -u`, `git add -A`의 차이는 무엇인가?
+3. 왜 `main`에 직접 작업하지 않았는가?
+4. Draft PR은 왜 사용하는가?
+5. 같은 PR에 추가 commit을 어떻게 반영하는가?
+6. merge·squash·rebase의 차이는 무엇인가?
+7. `git status -sb`와 `gh pr status`는 무엇을 확인하는가?
+8. push가 거절될 때 force push하지 않고 무엇을 확인하는가?
+9. Docker machine과 컨테이너 차이는 무엇인가?
+10. 바인드 마운트와 볼륨을 비교하라.
 
 ---
 
-# 27. FAIL 이후 보완
+# 36. 보너스 과제
 
-1. FAIL 근거를 요구사항 ID와 연결한다.
-2. 재현 명령과 실제 출력을 기록한다.
-3. 원인을 분류한다.
-   - 개념 부족
-   - 환경 설정 오류
-   - Docker 연동 오류
-   - 구현 누락
-   - 증거 누락
-   - 문서 오류
-   - 설명 부족
-4. 공식 문서에서 관련 항목을 다시 확인한다.
-5. 작은 단위로 수정한다.
-6. 관련 테스트를 재실행한다.
-7. 전체 필수 기능 회귀 테스트를 수행한다.
-8. clean clone으로 재현한다.
-9. 수정 내용을 별도 commit으로 남긴다.
-
----
-
-# 28. 보너스 과제
-
-필수 요구사항을 완료한 뒤 수행합니다.
-
-## 28.1 Docker Compose 단일 서비스
+## 36.1 Docker Compose
 
 ```yaml
 services:
@@ -1435,165 +2024,171 @@ docker compose logs
 docker compose down
 ```
 
-Compose의 파일 형식과 CLI는 Docker 공식 레퍼런스를 사용합니다. [R7]
-
-## 28.2 멀티 컨테이너
-
-- 웹 서버와 보조 서비스 2개 이상
-- 서비스 이름을 통한 통신 확인
-- Compose 네트워크 설명
-
-## 28.3 환경 변수
-
-- Dockerfile 또는 Compose에서 환경 변수 주입
-- 설정과 코드 분리 설명
-
-## 28.4 GitHub SSH
-
-OrbStack은 Mac SSH agent를 Linux machine에 전달할 수 있습니다. GitHub SSH 설정과 연결 시험은 GitHub 공식 문서를 사용합니다. [R2][R23]
+## 36.2 GitHub Issue 기반 작업 관리
 
 ```bash
-echo "$SSH_AUTH_SOCK"
-ssh -T git@github.com
+gh issue create --title "E1-1 볼륨 영속성 검증" --body "검증 명령과 증거를 기록한다."
+gh issue list --state open
 ```
 
-개인키를 저장소에 복사하거나 commit하지 않습니다.
+PR 본문에 `Closes #번호`를 연결합니다.
+
+## 36.3 PR 리뷰 연습
+
+동료 PR을 checkout하고 README 절차를 재현한 뒤 구체적 리뷰를 작성합니다.
+
+```bash
+gh pr checkout <번호>
+gh pr diff <번호>
+gh pr review <번호> --comment --body "재현한 명령, 확인 결과, 개선점을 기록"
+```
 
 ---
 
-# 29. 최종 제출 체크리스트
+# 37. 최종 제출 체크리스트
 
 ## 환경
 
-- [ ] OrbStack 버전
-- [ ] `codyssey-training` 확인
-- [ ] Ubuntu 24.04 확인
-- [ ] OrbStack Docker 연결
-- [ ] context `orbstack`
+- [ ] OrbStack·Ubuntu 24.04
+- [ ] Docker Engine 연결
+- [ ] Docker path test
+- [ ] 네트워크 확인
 
-## 터미널·권한
+## GitHub CLI·Git
 
-- [ ] 위치·목록·이동·생성·복사·이름변경·삭제
-- [ ] 파일 내용 확인·빈 파일 생성
-- [ ] 파일 권한 전후
-- [ ] 디렉터리 권한 전후
+- [ ] gh 설치·인증
+- [ ] credential helper
+- [ ] gh repo clone
+- [ ] 작업 branch
+- [ ] 선택적 staging
+- [ ] 의미 있는 commit
+- [ ] push upstream
+- [ ] PR 생성·검토·병합
+- [ ] Git graph 캡처
 
 ## Docker
 
-- [ ] `docker --version`
-- [ ] `docker info`
-- [ ] `docker images`
-- [ ] `docker ps`
-- [ ] `docker ps -a`
-- [ ] `docker logs`
-- [ ] `docker stats`
-- [ ] `hello-world`
+- [ ] version·info
+- [ ] images·ps·logs·stats
+- [ ] hello-world
 - [ ] Ubuntu 컨테이너
-
-## Dockerfile·네트워크·스토리지
-
-- [ ] Dockerfile
-- [ ] 커스텀 이미지
+- [ ] Dockerfile·custom image
 - [ ] 포트 매핑
-- [ ] 주소창 포함 접속 증거
-- [ ] 바인드 마운트 변경 전후
-- [ ] 볼륨 생성·연결
-- [ ] 컨테이너 삭제 전후 데이터 유지
+- [ ] 바인드 마운트
+- [ ] 볼륨 영속성
 
-## Git·문서·평가
+## 문서·평가
 
-- [ ] Git 설정
-- [ ] GitHub·VS Code 연동
+- [ ] README
+- [ ] 환경·Git·Docker 문서
 - [ ] 트러블슈팅 2건 이상
 - [ ] 요구사항 추적표
 - [ ] 테스트 결과
 - [ ] 증거 인덱스
-- [ ] 공식 참고문헌
-- [ ] 민감정보 마스킹
-- [ ] 모든 변경 commit·push
+- [ ] PR·commit 연결
+- [ ] 민감정보 점검
+- [ ] clean clone
 - [ ] Default branch 확인
-- [ ] clean clone 재현
 - [ ] 구두 설명 준비
 
 ---
 
-# 30. 공식 참고문헌
+# 38. 공식 참고문헌
 
 > 확인일: **2026-08-02**  
-> 아래 자료는 제품·프로젝트의 공식 문서만 사용했습니다. 명령 옵션은 설치된 버전에 따라 달라질 수 있으므로 `--help`와 해당 공식 문서를 함께 확인합니다.
+> 제품·프로젝트 공식 문서를 우선합니다. 설치 버전에 따라 옵션이 다를 수 있으므로 `--help`와 공식 문서를 함께 확인합니다.
 
-## 30.1 OrbStack 공식 문서
+## OrbStack
 
-- **[R1] OrbStack, _What is OrbStack?_**  
+- **[R1] OrbStack, What is OrbStack?**  
   <https://docs.orbstack.dev/>
-- **[R2] OrbStack, _Linux machines_** — machine 생성, 자원 제한, 파일 공유, SSH agent 전달  
+- **[R2] OrbStack, Linux machines**  
   <https://docs.orbstack.dev/machines/>
-- **[R3] OrbStack, _Commands_** — `orb`, `orb -m`, `mac`, `mac link`  
+- **[R3] OrbStack, Commands**  
   <https://docs.orbstack.dev/machines/commands>
-- **[R4] OrbStack, _Linux distributions_** — Ubuntu 24.04 LTS `ubuntu:noble`  
+- **[R4] OrbStack, Linux distributions**  
   <https://docs.orbstack.dev/machines/distros>
-- **[R5] OrbStack, _File sharing_**  
+- **[R5] OrbStack, File sharing**  
   <https://docs.orbstack.dev/machines/file-sharing>
-- **[R6] OrbStack, _Docker containers_**  
+- **[R6] OrbStack, Docker containers**  
   <https://docs.orbstack.dev/docker/>
 
-## 30.2 Docker 공식 문서
+## Docker
 
-- **[R7] Docker, _Reference documentation_** — Docker CLI와 Compose 레퍼런스  
+- **[R7] Docker, Reference documentation**  
   <https://docs.docker.com/reference/>
-- **[R8] Docker, _Dockerfile reference_** — `FROM`, `COPY`, `EXPOSE`, `LABEL`  
+- **[R8] Docker, Dockerfile reference**  
   <https://docs.docker.com/reference/dockerfile>
-- **[R9] Docker, _Build context_** — 빌드 컨텍스트와 `.dockerignore`  
+- **[R9] Docker, Build context and .dockerignore**  
   <https://docs.docker.com/build/concepts/context/>
-- **[R10] Docker, _Port publishing and mapping_**  
+- **[R10] Docker, Port publishing and mapping**  
   <https://docs.docker.com/engine/network/port-publishing/>
-- **[R11] Docker, _Bind mounts_**  
+- **[R11] Docker, Bind mounts**  
   <https://docs.docker.com/engine/storage/bind-mounts/>
-- **[R12] Docker, _Storage_**  
+- **[R12] Docker, Storage**  
   <https://docs.docker.com/engine/storage/>
-- **[R13] Docker, _Volumes_**  
+- **[R13] Docker, Volumes**  
   <https://docs.docker.com/engine/storage/volumes/>
 
-## 30.3 Git·Linux 명령 공식 문서
+## Git·Linux
 
-- **[R14] Git Project, _Git Reference_** — config, status, add, commit, branch, log, pull, push  
+- **[R14] Git Project, Git Reference**  
   <https://git-scm.com/docs>
-- **[R15] GNU Project, _chmod invocation_**  
+- **[R15] GNU Project, chmod invocation**  
   <https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html>
-- **[R16] GNU Project, _GNU Coreutils Manual_** — 파일·디렉터리 기본 명령  
+- **[R16] GNU Project, GNU Coreutils Manual**  
   <https://www.gnu.org/software/coreutils/manual/coreutils.html>
+- **[R28] Git Project, git-add Documentation**  
+  <https://git-scm.com/docs/git-add>
 
-## 30.4 GitHub·VS Code 공식 문서
+## GitHub·GitHub CLI·VS Code
 
-- **[R17] GitHub Docs, _Set up Git_**  
+- **[R17] GitHub Docs, Set up Git**  
   <https://docs.github.com/en/get-started/git-basics/set-up-git>
-- **[R18] GitHub Docs, _Cloning a repository_**  
+- **[R18] GitHub Docs, Cloning a repository**  
   <https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository>
-- **[R19] GitHub Docs, _Remediating a leaked secret in your repository_**  
+- **[R19] GitHub Docs, Remediating a leaked secret**  
   <https://docs.github.com/en/code-security/tutorials/remediate-leaked-secrets/remediating-a-leaked-secret>
-- **[R20] GitHub Docs, _Removing sensitive data from a repository_**  
+- **[R20] GitHub Docs, Removing sensitive data**  
   <https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository>
-- **[R21] Visual Studio Code, _Source Control in VS Code_**  
+- **[R21] Visual Studio Code, Source Control**  
   <https://code.visualstudio.com/docs/sourcecontrol/overview/>
-- **[R22] Visual Studio Code, _Working with GitHub in VS Code_**  
+- **[R22] Visual Studio Code, GitHub in VS Code**  
   <https://code.visualstudio.com/docs/sourcecontrol/github>
-- **[R23] GitHub Docs, _Connecting to GitHub with SSH_**  
+- **[R23] GitHub Docs, Connecting to GitHub with SSH**  
   <https://docs.github.com/en/authentication/connecting-to-github-with-ssh>
-
-## 30.5 참고문헌 사용 원칙
-
-- 명령이 실패하면 블로그보다 먼저 공식 문서를 확인합니다.
-- 문서 작성 시 참고한 자료 번호를 해당 트러블슈팅에 기록합니다.
-- 공식 문서의 예시는 본인의 환경에서 검증한 뒤 사용합니다.
-- 버전 차이가 있으면 `orb <command> --help`, `docker <command> --help`, `git help <command>` 결과를 우선 확인합니다.
+- **[R24] GitHub CLI, Installing gh on Linux and BSD**  
+  <https://github.com/cli/cli/blob/trunk/docs/install_linux.md>
+- **[R25] GitHub CLI, gh auth login**  
+  <https://cli.github.com/manual/gh_auth_login>
+- **[R26] GitHub CLI, gh auth setup-git**  
+  <https://cli.github.com/manual/gh_auth_setup-git>
+- **[R27] GitHub CLI, gh repo clone**  
+  <https://cli.github.com/manual/gh_repo_clone>
+- **[R29] GitHub CLI, gh pr create**  
+  <https://cli.github.com/manual/gh_pr_create>
+- **[R30] GitHub CLI, gh pr status**  
+  <https://cli.github.com/manual/gh_pr_status>
+- **[R31] GitHub CLI, gh pr checks**  
+  <https://cli.github.com/manual/gh_pr_checks>
+- **[R32] GitHub CLI, gh pr merge**  
+  <https://cli.github.com/manual/gh_pr_merge>
+- **[R33] GitHub CLI, gh pr diff**  
+  <https://cli.github.com/manual/gh_pr_diff>
+- **[R34] GitHub CLI, gh pr edit**  
+  <https://cli.github.com/manual/gh_pr_edit>
+- **[R35] GitHub CLI, gh pr ready**  
+  <https://cli.github.com/manual/gh_pr_ready>
 
 ---
 
 ## 최종 완료 정의
 
-> `codyssey-training`이라는 OrbStack Ubuntu 24.04 Linux machine에서 작업했다.  
-> Ubuntu의 Docker 명령은 Mac의 OrbStack Docker Engine과 연결되어 있다.  
-> 터미널·권한·Docker·Dockerfile·포트·마운트·볼륨·GitHub 실습을 직접 수행했다.  
-> 모든 결과는 명령과 출력, 스크린샷, 트러블슈팅 문서로 검증할 수 있다.  
-> 공식 문서를 근거로 구현과 문제 해결 과정을 설명할 수 있다.  
-> 평가자는 저장소 문서만 보고 동일한 절차를 재현할 수 있다.
+> `codyssey-training` Ubuntu 24.04 machine에서 작업했다.  
+> Ubuntu의 Docker 명령은 OrbStack Docker Engine에 정상 연결된다.  
+> GitHub CLI로 인증·clone·PR 상태 확인을 수행했다.  
+> 작업은 branch에서 의미 단위로 add·commit·push했다.  
+> Draft PR에서 진행상황을 기록하고 diff·checks를 확인한 뒤 병합했다.  
+> 터미널·권한·Dockerfile·포트·마운트·볼륨 실습을 직접 검증했다.  
+> 모든 요구사항은 문서·증거·commit·PR과 연결되어 있다.  
+> 평가자는 Default branch의 문서만 보고 같은 결과를 재현할 수 있다.
