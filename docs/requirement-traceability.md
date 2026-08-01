@@ -7,6 +7,9 @@
 | ENV-01 | OrbStack Ubuntu 24.04 | `codyssey-training` | `cat /etc/os-release` | `docs/environment.md` |  | ⬜ |
 | ENV-02 | OrbStack Docker 연결 | command link | `docker version`, `docker info` | `docs/environment.md` |  | ⬜ |
 | ENV-03 | Docker 경로 사전 시험 | `~/docker-path-test` | build·bind test | `docs/test-results.md` |  | ⬜ |
+| VSC-01 | OrbStack 내장 SSH 연결 | Mac → `codyssey-training@orb` | `ssh codyssey-training@orb` | `docs/environment.md` |  | ⬜ |
+| VSC-02 | VS Code Remote-SSH 연결 | Remote - SSH 창 | 상태 표시줄·Remote SSH Output | `docs/screenshots/vscode/` |  | ⬜ |
+| VSC-03 | 원격 통합 터미널 | Ubuntu workspace | OS·`$SHELL`·`pwd`·Git 루트·branch | `docs/environment.md` |  | ⬜ |
 | GH-01 | GitHub CLI 설치 | Ubuntu | `gh --version` | `docs/environment.md` |  | ⬜ |
 | GH-02 | GitHub CLI 인증 | HTTPS web login | `gh auth status` | `docs/git-workflow.md` |  | ⬜ |
 | GH-03 | 저장소 쓰기 권한 | 대상 저장소 | `gh repo view --json viewerPermission` | `docs/git-workflow.md` |  | ⬜ |
