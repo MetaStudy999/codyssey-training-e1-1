@@ -32,13 +32,25 @@ orb status
 orb list
 ```
 
-Ubuntu에서 저장소를 clone하고 작업 branch를 만든 뒤, 저장소에 포함된 점검 스크립트를 실행합니다.
+Ubuntu에서 저장소를 clone하고 작업 branch를 만든 뒤:
 
 ```bash
 bash scripts/preflight-ubuntu.sh
 ```
 
-Mac에서는 clone 이후 다음 스크립트를 실행할 수 있습니다.
+저장소가 Ubuntu에만 clone되어 있다면 Mac 사전 점검 스크립트를 임시 파일로 복사한 뒤 실행합니다.
+
+```bash
+# [macOS]
+ssh codyssey-training@orb \
+  'cat "$HOME/codyssey-training/codyssey-training-e1-1/scripts/preflight-macos.sh"' \
+  > /tmp/e1-1-preflight-macos.sh
+
+sed -n '1,220p' /tmp/e1-1-preflight-macos.sh
+bash /tmp/e1-1-preflight-macos.sh
+```
+
+Mac에도 저장소를 별도로 clone한 경우에는 해당 저장소에서 직접 실행할 수 있습니다.
 
 ```bash
 bash scripts/preflight-macos.sh
@@ -61,6 +73,11 @@ if [ -z "$CODE_BIN" ]; then
       break
     fi
   done
+fi
+
+if [ -z "$CODE_BIN" ]; then
+  echo "[FAIL] VS Code CLI를 찾지 못했습니다."
+  exit 1
 fi
 
 REMOTE_DIR="$(ssh codyssey-training@orb \
@@ -96,6 +113,7 @@ bash scripts/resume-check.sh
 터미널을 닫으면 다음 변수는 사라집니다.
 
 ```text
+CODE_BIN
 WORK_BRANCH
 REMOTE_DIR
 HOST_PORT
