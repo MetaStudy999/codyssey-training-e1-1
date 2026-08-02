@@ -4,9 +4,11 @@
 > 주 실습환경: **macOS + OrbStack + Ubuntu 24.04 LTS + OrbStack Docker**  
 > OrbStack Linux machine 이름: **`codyssey-training`**
 
-이 문서는 초보자가 명령을 위에서부터 실행하면서 환경·Git·GitHub·VS Code·Docker 미션을 한 개의 작업 브랜치와 Pull Request로 완료하도록 구성합니다.
+이 문서는 초보자가 명령을 위에서부터 실행하면서 환경·Git·GitHub·VS Code·Docker 미션을 한 개의 작업 branch와 Pull Request로 완료하도록 구성합니다.
 
-> **터미널 기초 → OrbStack Ubuntu → Docker 연결 → GitHub CLI → clone → 작업 브랜치 → VS Code Remote-SSH → commit·push → Draft PR → Docker 실습 → clean clone → 병합**
+> **터미널 기초 → OrbStack Ubuntu → Docker → GitHub CLI → clone → 작업 branch → `code --remote` → commit·push → Draft PR → 미션 실습 → clean clone → 병합 → 최종 검증**
+
+빠른 진행표: [`docs/beginner-checkpoints.md`](docs/beginner-checkpoints.md)
 
 ---
 
@@ -24,23 +26,28 @@
 | **[오류 시]** | 실제 실패했을 때만 실행 |
 | **[선택]** | 필수 미션 이후 확장 |
 
-### 0.2 단계 중지 원칙
+### 0.2 실행 원칙
 
-다음 조건을 통과하지 못하면 다음 단계로 넘어가지 않습니다.
+1. 명령 블록을 한 번에 하나씩 실행합니다.
+2. 바로 아래 정상 기준을 확인합니다.
+3. `[FAIL]` 또는 오류가 나오면 다음 단계로 넘어가지 않습니다.
+4. 오류 메시지를 수정하지 말고 원문 그대로 보존합니다.
+5. 현재 branch가 `main`이면 파일을 수정하지 않습니다.
+6. `git push --force`, `docker system prune`을 사용하지 않습니다.
+
+### 0.3 단계 중지 조건
 
 - GitHub·Docker Hub 네트워크 연결 실패
 - `docker version`, `docker info`, `hello-world` 실패
 - GitHub CLI 인증 실패
-- 저장소 권한이 `READ`뿐임
-- 현재 브랜치가 `main`인데 파일 변경이 발생함
+- 저장소 권한이 `READ`
+- 현재 branch가 `main`인데 파일 변경 발생
 - VS Code 통합 터미널이 macOS에서 실행됨
-- `git diff --cached`에 의도하지 않은 파일이 있음
+- `git diff --cached`에 의도하지 않은 파일 존재
 - clean clone 빌드 실패
 - PR checks 실패
 
-### 0.3 한 개 브랜치·한 개 PR
-
-첫 수행에서는 다음 구조만 사용합니다.
+### 0.4 첫 수행의 Git 구조
 
 ```text
 main
@@ -55,7 +62,7 @@ main
     └── clean clone 검증
 ```
 
-모든 파일 수정은 `feat/e1-1-complete`에서 수행합니다.
+기존 branch나 PR이 있으면 새로 만들지 않고 재사용합니다.
 
 ---
 
@@ -68,25 +75,26 @@ main
 5. Ubuntu 기본환경과 네트워크
 6. OrbStack Docker 연결과 경로 시험
 7. GitHub CLI 설치와 인증
-8. 저장소 clone과 작업 브랜치 생성
-9. 초기 결과 문서 준비
-10. VS Code Remote-SSH 연결
+8. 저장소 clone과 작업 branch 생성
+9. 초기 결과 문서와 점검 스크립트
+10. VS Code Remote-SSH를 CLI로 실행
 11. Git 반복 절차와 첫 push
-12. Draft Pull Request 생성
+12. Draft Pull Request 생성 또는 재사용
 13. 터미널·권한 미션
 14. Docker 기본 운영
 15. Dockerfile 웹 서버
 16. 포트 매핑
 17. 바인드 마운트
 18. Docker 볼륨 영속성
-19. 트러블슈팅·증거·보안
-20. clean clone 사전 검증
-21. PR 최종 점검과 병합
-22. 병합 후 최종 검증
-23. 공용 장비 로그아웃
-24. 오류 대응표
-25. 확장 부록
-26. 공식 참고문헌
+19. 트러블슈팅·증거·스크린샷·보안
+20. 중단 후 작업 재개
+21. clean clone 사전 검증
+22. PR 최종 점검과 병합
+23. 병합 후 최종 검증
+24. 공용 장비 로그아웃과 안전한 정리
+25. 오류 대응표
+26. 확장 부록
+27. 공식 참고문헌
 
 ---
 
@@ -95,20 +103,18 @@ main
 Default branch인 `main`에서 다음을 확인할 수 있어야 합니다.
 
 - OrbStack Ubuntu 24.04 `codyssey-training`을 사용했다.
-- VS Code Remote-SSH로 `codyssey-training@orb`에 연결했다.
-- VS Code 통합 터미널이 Ubuntu 셸과 저장소 루트에서 시작한다.
-- 터미널로 파일·디렉터리를 생성·복사·이동·삭제했다.
-- 파일과 디렉터리 권한을 확인하고 변경했다.
-- Ubuntu에서 OrbStack Docker Engine을 사용했다.
-- Docker 이미지와 컨테이너를 실행·조회·중지·삭제했다.
-- `Dockerfile`로 NGINX 이미지를 빌드했다.
-- 포트 매핑으로 Mac 브라우저에서 웹 페이지를 확인했다.
-- 바인드 마운트와 Docker 볼륨 영속성을 검증했다.
-- GitHub CLI로 인증·clone·PR 관리를 수행했다.
-- `feat/e1-1-complete`에서 의미 단위 commit을 작성했다.
-- clean clone을 PR 병합 전에 통과했다.
+- OrbStack Docker Client와 Server가 연결됐다.
+- GitHub CLI 인증과 쓰기 권한을 확인했다.
+- 저장소 clone 직후 작업 branch를 만들거나 기존 branch를 재사용했다.
+- Mac에서 `code --remote`로 Ubuntu workspace를 열었다.
+- VS Code 통합 터미널에서 Ubuntu·셸·경로·Git root·branch를 검증했다.
+- 터미널과 권한 실습을 수행했다.
+- Docker 이미지·컨테이너·Dockerfile·포트·바인드 마운트·볼륨을 검증했다.
+- 의미 단위 commit을 Draft PR에 누적했다.
+- clean clone을 통과했다.
 - 트러블슈팅을 최소 2건 기록했다.
-- 토큰·비밀번호·개인키를 저장소와 스크린샷에 노출하지 않았다.
+- token·인증 코드·개인키·학교 내부정보를 저장소와 스크린샷에 노출하지 않았다.
+- 병합 후 `scripts/final-check.sh`가 성공했다.
 
 ---
 
@@ -118,26 +124,26 @@ Default branch인 `main`에서 다음을 확인할 수 있어야 합니다.
 1. Mac 터미널 기본 명령 연습
 2. OrbStack 실행 확인
 3. Ubuntu 24.04 codyssey-training 생성 또는 확인
-4. Ubuntu 네트워크와 기본 패키지 점검
+4. Ubuntu 네트워크와 기본 패키지 확인
 5. OrbStack Docker 연결과 경로 시험
 6. GitHub CLI 설치·인증
 7. 저장소 쓰기 권한 확인
 8. 저장소 clone
 9. main 최신화
-10. feat/e1-1-complete 작업 브랜치 생성
-11. 초기 문서·스크린샷 폴더 준비
-12. Mac에서 OrbStack SSH 사전 확인
-13. VS Code Remote-SSH로 codyssey-training@orb 연결
-14. Ubuntu 저장소 폴더 열기
-15. VS Code 통합 터미널 OS·셸·경로·브랜치 검증
+10. 기존 local·remote branch 확인 후 feat/e1-1-complete 선택
+11. 초기 문서·스크린샷 폴더 확인
+12. Ubuntu 사전 점검 스크립트 실행
+13. Mac에서 SSH·VS Code CLI 사전 점검
+14. code --remote로 Ubuntu workspace 열기
+15. VS Code 원격 통합 터미널 검증
 16. 첫 commit·push
-17. Draft PR 생성
+17. 기존 Draft PR 확인 또는 새 Draft PR 생성
 18. 터미널·권한·Docker 미션 수행
-19. 트러블슈팅·증거 정리
-20. 현재 작업 브랜치를 clean clone으로 검증
+19. 트러블슈팅·증거·보안 정리
+20. clean clone 검증
 21. PR Ready·병합
-22. main에서 최종 빌드와 웹 응답 확인
-23. 공용 장비에서만 마지막에 로그아웃
+22. main에서 final-check 실행
+23. 공용 장비 로그아웃과 E1-1 전용 자원 정리
 ```
 
 ---
@@ -172,8 +178,8 @@ cd ~
 - `cd`: 경로 이동
 - `.`: 현재 디렉터리
 - `..`: 상위 디렉터리
-- `/`로 시작하는 경로: 절대 경로
-- 현재 위치를 기준으로 하는 경로: 상대 경로
+- `/`로 시작: 절대 경로
+- 현재 위치 기준: 상대 경로
 
 ---
 
@@ -190,23 +196,21 @@ orb list
 
 정상 기준:
 
-- 버전이 출력된다.
-- OrbStack이 실행 중이다.
-- machine 목록이 표시된다.
+- 버전 출력
+- OrbStack 실행 중
+- machine 목록 표시
 
-## 4.2 Ubuntu machine 확인
+## 4.2 Ubuntu machine 확인 또는 생성
 
-목록에 `codyssey-training`이 있을 때만 다음을 실행합니다.
+목록에 `codyssey-training`이 있을 때:
 
 ```bash
-# [macOS]
 orb info codyssey-training
 ```
 
-없으면 생성합니다.
+없을 때만 생성합니다.
 
 ```bash
-# [macOS]
 orb create ubuntu:noble codyssey-training
 ```
 
@@ -221,7 +225,7 @@ orb create \
   codyssey-training
 ```
 
-## 4.3 대화형 셸 접속
+## 4.3 Ubuntu 접속
 
 ```bash
 # [macOS]
@@ -240,15 +244,13 @@ pwd
 정상 기준:
 
 - Ubuntu 24.04 또는 `VERSION_CODENAME=noble`
-- 현재 사용자와 홈 디렉터리 확인
-
-> 일반 대화형 실습에는 `orb -m codyssey-training`을 사용합니다. VS Code 연결에는 10장의 OrbStack 내장 SSH를 사용합니다.
+- 사용자와 home 디렉터리 확인
 
 ---
 
 # 5. Ubuntu 기본환경과 네트워크
 
-## 5.1 네트워크 확인
+## 5.1 네트워크
 
 ```bash
 # [Ubuntu]
@@ -256,7 +258,7 @@ getent hosts github.com
 curl -I https://github.com
 ```
 
-두 명령 중 하나라도 실패하면 다음 단계로 넘어가지 않습니다.
+하나라도 실패하면 다음 단계로 넘어가지 않습니다.
 
 ## 5.2 기본 패키지
 
@@ -272,14 +274,15 @@ sudo apt install -y \
   nano \
   tree \
   jq \
+  tar \
   unzip \
   zip
 ```
 
 ```bash
-# [확인]
 git --version
 curl --version | head -n 1
+tar --version | head -n 1
 jq --version
 ```
 
@@ -295,7 +298,7 @@ pwd
 
 # 6. OrbStack Docker 연결과 경로 시험
 
-## 6.1 Docker 명령 확인
+## 6.1 Docker 명령
 
 ```bash
 # [Ubuntu]
@@ -304,16 +307,15 @@ type -a docker || true
 mac which docker || true
 ```
 
-`docker` 명령이 없을 때만 실행합니다.
+`docker` 명령이 없을 때만:
 
 ```bash
-# [오류 시]
 mac link docker
 hash -r
 command -v docker
 ```
 
-## 6.2 Engine 확인
+## 6.2 Engine 연결
 
 ```bash
 docker version
@@ -323,21 +325,22 @@ docker run --rm hello-world
 
 정상 기준:
 
-- Client와 Server가 모두 표시된다.
-- `docker info`가 Engine 정보를 반환한다.
-- `Hello from Docker!`가 출력된다.
+- Client와 Server 모두 표시
+- `docker info` 성공
+- `Hello from Docker!` 출력
 
 ## 6.3 command link 복구
 
+실제 오류가 있을 때만:
+
 ```bash
-# [오류 시]
 mac unlink docker
 mac link docker
 hash -r
 exec "$SHELL" -l
 ```
 
-새 셸에서 다시 확인합니다.
+새 셸에서:
 
 ```bash
 command -v docker
@@ -345,7 +348,7 @@ docker version
 docker info
 ```
 
-## 6.4 Docker 경로 사전 시험
+## 6.4 Docker 경로 시험
 
 ```bash
 mkdir -p ~/docker-path-test
@@ -368,7 +371,7 @@ docker run --rm \
   cat /data/test.txt
 ```
 
-두 실행에서 모두 다음이 출력되어야 합니다.
+두 실행 모두 다음을 출력해야 합니다.
 
 ```text
 OrbStack path test
@@ -378,23 +381,20 @@ OrbStack path test
 
 # 7. GitHub CLI 설치와 인증
 
-## 7.1 설치
+## 7.1 설치 확인
 
 ```bash
-# [Ubuntu]
 command -v gh || true
 gh --version || true
 ```
 
-버전이 없을 때만 설치합니다.
+없을 때만 설치합니다.
 
 ```bash
 sudo mkdir -p -m 755 /etc/apt/keyrings
-
 wget -nv \
   -O /tmp/githubcli-archive-keyring.gpg \
   https://cli.github.com/packages/githubcli-archive-keyring.gpg
-
 sudo cp /tmp/githubcli-archive-keyring.gpg \
   /etc/apt/keyrings/githubcli-archive-keyring.gpg
 sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
@@ -416,7 +416,7 @@ gh auth login \
   --clipboard
 ```
 
-`unknown flag: --clipboard`가 나오면 `--clipboard`를 제외하고 다시 실행합니다.
+`unknown flag: --clipboard`일 때:
 
 ```bash
 gh auth login \
@@ -425,10 +425,7 @@ gh auth login \
   --web
 ```
 
-브라우저가 자동으로 열리지 않으면 터미널에 표시된 URL을 Mac 브라우저에서 열고 일회용 코드를 입력합니다.
-
 ```bash
-# [확인]
 gh auth status --hostname github.com
 gh auth setup-git --hostname github.com
 gh config get git_protocol
@@ -438,9 +435,9 @@ gh config get git_protocol
 
 ---
 
-# 8. 저장소 clone과 작업 브랜치 생성
+# 8. 저장소 clone과 작업 branch 생성
 
-## 8.1 쓰기 권한 확인
+## 8.1 쓰기 권한
 
 ```bash
 gh repo view MetaStudy999/codyssey-training-e1-1 \
@@ -456,14 +453,20 @@ cd ~/codyssey-training
 ls -ld codyssey-training-e1-1 2>/dev/null || true
 ```
 
-폴더가 없을 때 실행합니다.
+폴더가 없을 때:
 
 ```bash
 gh repo clone MetaStudy999/codyssey-training-e1-1
 cd codyssey-training-e1-1
 ```
 
-기존 폴더가 있으면 바로 삭제하지 말고 기존 작업 여부를 확인합니다.
+기존 폴더가 있으면 삭제하지 말고 그 안의 작업 상태를 확인합니다.
+
+```bash
+cd ~/codyssey-training/codyssey-training-e1-1
+git status -sb
+git remote -v
+```
 
 ## 8.3 Git 사용자 정보
 
@@ -472,7 +475,7 @@ git config --global user.name || true
 git config --global user.email || true
 ```
 
-값이 없으면 입력합니다.
+값이 없을 때:
 
 ```bash
 read -r -p "Git commit 이름: " GIT_NAME
@@ -483,39 +486,43 @@ git config --global user.email "$GIT_EMAIL"
 git config --global init.defaultBranch main
 ```
 
-## 8.4 파일 수정 전 브랜치 생성
+## 8.4 기존 local·remote branch 확인 후 전환
 
 ```bash
 WORK_BRANCH="feat/e1-1-complete"
 
 git switch main
 git pull --ff-only origin main
-git switch -c "$WORK_BRANCH"
+git fetch origin
+
+if git show-ref --verify --quiet "refs/heads/$WORK_BRANCH"
+then
+  git switch "$WORK_BRANCH"
+elif git ls-remote --exit-code --heads origin "$WORK_BRANCH" >/dev/null 2>&1
+then
+  git switch --track -c "$WORK_BRANCH" "origin/$WORK_BRANCH"
+else
+  git switch -c "$WORK_BRANCH"
+fi
 ```
 
-같은 로컬 브랜치가 이미 있으면:
-
 ```bash
-# [오류 시]
-git switch feat/e1-1-complete
-```
-
-```bash
-# [확인]
 pwd
 git status -sb
 git branch --show-current
+git branch -vv
 git remote -v
 ```
 
-현재 브랜치는 반드시 `feat/e1-1-complete`여야 합니다.
+현재 branch는 반드시 `feat/e1-1-complete`여야 합니다.
 
 ---
 
-# 9. 초기 결과 문서 준비
+# 9. 초기 결과 문서와 점검 스크립트
+
+## 9.1 폴더 확인
 
 ```bash
-# [Ubuntu: 작업 브랜치]
 mkdir -p docs/screenshots/{environment,git,terminal,permissions,docker,port,mount,volume,github,vscode}
 
 for directory in docs/screenshots/{environment,git,terminal,permissions,docker,port,mount,volume,github,vscode}
@@ -544,35 +551,41 @@ sort -u .gitignore -o .gitignore
 git status -sb
 ```
 
-빈 스크린샷 폴더는 `.gitkeep`으로 추적합니다.
+## 9.2 Ubuntu 사전 점검
+
+```bash
+bash scripts/preflight-ubuntu.sh
+```
+
+`[FAIL]`이 하나라도 있으면 해결 후 다시 실행합니다.
+
+## 9.3 점검 스크립트 역할
+
+| 스크립트 | 실행 위치 | 목적 |
+|---|---|---|
+| `preflight-macos.sh` | Mac | OrbStack·SSH·VS Code CLI·원격 요구사항 |
+| `preflight-ubuntu.sh` | Ubuntu | Ubuntu·GitHub CLI·Docker·branch |
+| `verify-vscode-remote.sh` | VS Code Ubuntu | OS·셸·경로·Git root·branch |
+| `resume-check.sh` | Ubuntu | 작업 재개 상태 |
+| `final-check.sh` | main | 최종 build·HTTP·보안 |
+| `cleanup-e1-1.sh` | Ubuntu | E1-1 Docker 자원만 정리 |
+
+실행 권한이 없어도 `bash scripts/파일명.sh` 형식으로 실행할 수 있습니다.
 
 ---
 
-# 10. VS Code Remote-SSH 연결
+# 10. VS Code Remote-SSH를 CLI로 실행
 
-> 이 단계는 필수입니다. Ubuntu 안에서 `code .`를 실행하는 것만으로는 VS Code 통합 터미널이 Ubuntu에서 실행된다는 사실을 보장하지 않습니다.
+상세 가이드: [`docs/vscode-orbstack-remote-ssh.md`](docs/vscode-orbstack-remote-ssh.md)
 
-상세 절차: [`docs/vscode-orbstack-remote-ssh.md`](docs/vscode-orbstack-remote-ssh.md)
-
-## 10.1 OrbStack SSH의 역할
-
-OrbStack에는 모든 Linux machine에 접근하는 SSH 서버가 내장되어 있습니다.
-
-- Mac의 SSH 설정에 `orb` 호스트가 자동 등록됩니다.
-- 특정 machine은 `ssh machine@orb` 형식으로 선택합니다.
-- 비밀번호 인증은 비활성화되어 있습니다.
-- OrbStack 전용 키 인증을 사용합니다.
-- Ubuntu에 `openssh-server`를 설치하거나 `sshd_config`를 수정하지 않습니다.
-- 일반 대화형 셸은 `orb -m codyssey-training`, VS Code 같은 외부 도구는 SSH를 사용합니다.
-
-## 10.2 Mac 터미널에서 SSH 사전 검증
-
-Ubuntu 셸에서 나와 Mac 터미널로 돌아갑니다.
+## 10.1 Mac으로 돌아가기
 
 ```bash
-# [Ubuntu → macOS]
+# [Ubuntu]
 exit
 ```
+
+## 10.2 SSH 확인
 
 ```bash
 # [macOS]
@@ -581,80 +594,103 @@ orb info codyssey-training
 ssh codyssey-training@orb
 ```
 
-SSH 접속 후:
+Ubuntu가 열리면 `exit`로 다시 Mac으로 돌아옵니다.
+
+## 10.3 관리자 권한 없이 VS Code CLI 찾기
 
 ```bash
-# [Ubuntu via SSH]
-hostname
-cat /etc/os-release
-whoami
-printf 'SHELL=%s\n' "$SHELL"
-pwd
-exit
+# [macOS]
+CODE_BIN="$(command -v code 2>/dev/null || true)"
+
+if [ -z "$CODE_BIN" ]; then
+  for candidate in \
+    "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code" \
+    "$HOME/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code"
+  do
+    if [ -x "$candidate" ]; then
+      CODE_BIN="$candidate"
+      break
+    fi
+  done
+fi
+
+if [ -z "$CODE_BIN" ]; then
+  echo "[FAIL] VS Code CLI를 찾지 못했습니다."
+  exit 1
+fi
+
+"$CODE_BIN" --version
+"$CODE_BIN" --help | grep -- '--remote'
+```
+
+`code`를 PATH에 설치할 권한이 없어도 앱 내부 CLI를 직접 사용할 수 있습니다.
+
+## 10.4 Remote - SSH 확장
+
+```bash
+"$CODE_BIN" --list-extensions \
+  | grep -Fx 'ms-vscode-remote.remote-ssh' || \
+  "$CODE_BIN" --install-extension ms-vscode-remote.remote-ssh
+```
+
+## 10.5 Mac 사전 점검
+
+```bash
+# Mac에서 Ubuntu 저장소의 스크립트 경로를 직접 실행할 수 없으므로
+# 저장소를 Mac에도 clone하지 않았다면 아래 수동 명령을 사용합니다.
+command -v orb
+command -v ssh
+orb status
+orb info codyssey-training
+
+ssh codyssey-training@orb '
+  command -v bash &&
+  command -v tar &&
+  { command -v curl || command -v wget; } &&
+  test -w "$HOME" &&
+  df -h "$HOME"
+'
+```
+
+저장소를 Mac에도 별도로 clone한 경우에는 다음을 사용할 수 있습니다.
+
+```bash
+bash scripts/preflight-macos.sh
+```
+
+## 10.6 원격 경로 계산과 실행
+
+```bash
+ssh codyssey-training@orb \
+  'test -d "$HOME/codyssey-training/codyssey-training-e1-1" && echo "REMOTE_DIR_OK"'
+
+REMOTE_DIR="$(ssh codyssey-training@orb \
+  'printf "%s/codyssey-training/codyssey-training-e1-1" "$HOME"')"
+
+printf 'REMOTE_DIR=%s\n' "$REMOTE_DIR"
+
+"$CODE_BIN" --new-window \
+  --remote "ssh-remote+codyssey-training@orb" \
+  "$REMOTE_DIR/"
 ```
 
 정상 기준:
 
-- Ubuntu 24.04가 표시된다.
-- 비밀번호용 SSH 서버를 별도로 설치하지 않고 접속된다.
-- `exit` 후 Mac으로 돌아온다.
+- 새 VS Code 창
+- 왼쪽 아래 SSH Remote indicator
+- Explorer 최상단 `codyssey-training-e1-1`
 
-SSH가 실패하면 다음 단계로 넘어가지 않습니다.
-
-```bash
-# [macOS: 오류 시]
-ssh -G codyssey-training@orb | head -n 30
-orb ssh
-```
-
-## 10.3 Mac VS Code에 Remote - SSH 설치
-
-VS Code Extensions에서 다음 확장을 설치합니다.
+CLI가 실패할 때만 GUI를 사용합니다.
 
 ```text
-Remote - SSH
-확장 ID: ms-vscode-remote.remote-ssh
+Shift + Command + P
+→ Remote-SSH: Connect to Host...
+→ codyssey-training@orb
+→ File → Open Folder...
+→ ~/codyssey-training/codyssey-training-e1-1
 ```
 
-이 저장소의 `.vscode/extensions.json`에도 권장 확장으로 등록되어 있습니다.
-
-## 10.4 VS Code에서 연결
-
-1. `Shift + Command + P`
-2. `Remote-SSH: Connect to Host...`
-3. 다음 대상을 입력 또는 선택
-
-```text
-codyssey-training@orb
-```
-
-4. 플랫폼을 묻는 경우 `Linux` 선택
-5. VS Code Server 설치 완료까지 대기
-6. 왼쪽 아래 상태 표시줄에 SSH 원격 연결 표시 확인
-
-연결 로그:
-
-```text
-View → Output → Remote - SSH
-```
-
-## 10.5 Ubuntu 저장소 폴더 열기
-
-Remote-SSH 창에서:
-
-```text
-File → Open Folder...
-```
-
-다음 폴더를 엽니다.
-
-```text
-~/codyssey-training/codyssey-training-e1-1
-```
-
-## 10.6 새 통합 터미널 검증
-
-Remote-SSH 창에서 새 터미널을 엽니다.
+## 10.7 원격 터미널 검증
 
 ```text
 Terminal → New Terminal
@@ -662,66 +698,26 @@ Terminal → New Terminal
 
 ```bash
 # [VS Code Ubuntu]
-hostname
-cat /etc/os-release | grep -E 'PRETTY_NAME|VERSION_CODENAME'
-printf 'SHELL=%s\n' "$SHELL"
-ps -p $$ -o comm=
-pwd
-git rev-parse --show-toplevel
-git branch --show-current
-git status -sb
+bash scripts/verify-vscode-remote.sh
 ```
 
 정상 기준:
 
-| 항목 | 정상 결과 |
-|---|---|
-| 운영체제 | Ubuntu 24.04 |
-| 셸 | `bash` 또는 Ubuntu에 설정된 셸 |
-| `pwd` | `~/codyssey-training/codyssey-training-e1-1` |
-| Git 최상위 경로 | 같은 저장소 경로 |
-| 현재 브랜치 | `feat/e1-1-complete` |
-| VS Code 상태 표시줄 | SSH 원격 연결 표시 |
-
-다음은 실패입니다.
-
-- 경로가 `/Users/...`
-- 셸이 Mac 로컬 `zsh`이고 원격 표시가 없음
-- `git rev-parse`가 저장소가 아니라고 출력
-- 현재 브랜치가 `main`
-
-## 10.7 저장소 터미널 설정
-
-`.vscode/settings.json`에는 다음이 설정되어 있습니다.
-
-```json
-{
-  "terminal.integrated.cwd": "${workspaceFolder}",
-  "terminal.integrated.defaultProfile.linux": "bash",
-  "terminal.integrated.splitCwd": "workspaceRoot"
-}
+```text
+[PASS] Ubuntu 24.04 noble
+[PASS] 현재 디렉터리
+[PASS] Git 최상위 경로
+[PASS] 현재 브랜치: feat/e1-1-complete
+[PASS] VS Code Remote-SSH 터미널 검증 완료
 ```
 
-따라서 Remote-SSH 창의 새 터미널은 Bash와 workspace 루트에서 시작해야 합니다.
-
-> Remote-SSH 창에서도 `Terminal: Create New Integrated Terminal (Local)`을 실행하면 Mac 로컬 터미널이 열릴 수 있습니다. 이 미션에서는 사용하지 않습니다.
-
-## 10.8 VS Code 증거 기록
-
-다음을 `docs/environment.md`와 `docs/screenshots/vscode/`에 기록합니다.
-
-- Remote-SSH 상태 표시줄
-- Ubuntu 버전
-- `$SHELL`과 실제 셸 프로세스
-- `pwd`
-- Git 최상위 경로
-- 현재 브랜치
+`/Users/...` 또는 `main`이 나오면 실패입니다.
 
 ---
 
 # 11. Git 반복 절차와 첫 push
 
-모든 작업 단위에서 반복합니다.
+모든 작업 단위에서 다음을 반복합니다.
 
 ```text
 파일 수정
@@ -768,16 +764,10 @@ git diff
 git add \
   .gitignore \
   .vscode \
-  docs/environment.md \
-  docs/git-workflow.md \
-  docs/terminal-and-permissions.md \
-  docs/docker-operations.md \
-  docs/bind-mount.md \
-  docs/volume-persistence.md \
-  docs/troubleshooting.md \
-  docs/test-results.md \
-  docs/requirement-traceability.md \
-  docs/screenshots
+  README.md \
+  E1-1-training.md \
+  scripts \
+  docs
 
 git diff --cached --stat
 git diff --cached
@@ -790,17 +780,26 @@ git commit -m "Docs: initialize E1-1 environment and evidence structure"
 git push -u origin feat/e1-1-complete
 ```
 
-```bash
-# [확인]
-git status -sb
-git branch -vv
-```
-
 강제 push는 사용하지 않습니다.
 
 ---
 
-# 12. Draft Pull Request 생성
+# 12. Draft Pull Request 생성 또는 재사용
+
+## 12.1 기존 PR 확인
+
+```bash
+WORK_BRANCH="feat/e1-1-complete"
+
+gh pr list \
+  --head "$WORK_BRANCH" \
+  --base main \
+  --state open
+```
+
+기존 PR이 표시되면 새 PR을 만들지 않습니다. 같은 branch에 계속 push합니다.
+
+## 12.2 기존 PR이 없을 때만 생성
 
 ```bash
 cat > /tmp/e1-1-pr-body.md <<'EOF'
@@ -813,7 +812,7 @@ OrbStack Ubuntu 24.04와 VS Code Remote-SSH 환경에서 E1-1 미션을 수행�
 - [x] OrbStack Ubuntu
 - [x] Docker Engine 연결
 - [x] GitHub CLI 인증
-- [x] 작업 브랜치
+- [x] 작업 branch
 - [x] VS Code Remote-SSH
 - [ ] 터미널·권한
 - [ ] Docker 기본 운영
@@ -849,7 +848,6 @@ echo "PR 번호: $PR_NUMBER"
 # 13. 터미널·권한 미션
 
 ```bash
-# [VS Code Ubuntu]
 cd ~/codyssey-training/codyssey-training-e1-1
 mkdir -p practice/source
 cd practice
@@ -884,8 +882,6 @@ chmod 700 permission-dir
 ls -ld permission-dir
 ```
 
-`644 → 600`은 Git diff에 표시되지 않을 수 있으므로 `ls -l` 출력과 문서로 증명합니다.
-
 ```bash
 cd ~/codyssey-training/codyssey-training-e1-1
 git add docs/terminal-and-permissions.md practice
@@ -899,7 +895,6 @@ git push
 # 14. Docker 기본 운영
 
 ```bash
-# [VS Code Ubuntu]
 docker --version
 docker version
 docker info
@@ -929,22 +924,22 @@ docker logs e1-1-ubuntu
 docker exec -it e1-1-ubuntu bash
 ```
 
+컨테이너 내부:
+
 ```bash
-# [컨테이너]
 pwd
 ls -la
 echo "Hello from Ubuntu container"
 exit
 ```
 
+Ubuntu로 돌아와:
+
 ```bash
-# [VS Code Ubuntu]
 docker stop e1-1-ubuntu
 docker start e1-1-ubuntu
 docker rm -f e1-1-ubuntu
-```
 
-```bash
 git add docs/docker-operations.md docs/screenshots/docker
 git diff --cached
 git commit -m "Docs: record Docker image and container operations"
@@ -956,7 +951,6 @@ git push
 # 15. Dockerfile 웹 서버
 
 ```bash
-# [VS Code Ubuntu: 저장소 루트]
 cd ~/codyssey-training/codyssey-training-e1-1
 mkdir -p site
 
@@ -977,10 +971,8 @@ EOF
 
 cat > Dockerfile <<'EOF'
 FROM nginx:alpine
-
 LABEL org.opencontainers.image.title="codyssey-e1-1-web"
 LABEL org.opencontainers.image.description="Codyssey E1-1 custom web server"
-
 COPY site/ /usr/share/nginx/html/
 EXPOSE 80
 EOF
@@ -1010,7 +1002,7 @@ git push
 
 # 16. 포트 매핑
 
-## 16.1 사용 가능한 포트 선택
+## 16.1 포트 선택
 
 ```bash
 unset HOST_PORT
@@ -1026,16 +1018,22 @@ done
 
 if test -z "${HOST_PORT:-}"
 then
-  echo "8080, 8081, 18080 포트를 사용할 수 없습니다."
+  echo "사용 가능한 포트가 없습니다."
   exit 1
 fi
 
 printf 'HOST_PORT=%s\n' "$HOST_PORT" > .env.local
 source .env.local
-echo "$HOST_PORT"
+echo "사용 포트: $HOST_PORT"
 ```
 
-## 16.2 실행과 검증
+새 터미널에서는 다시 실행합니다.
+
+```bash
+source .env.local
+```
+
+## 16.2 실행
 
 ```bash
 docker rm -f e1-1-web 2>/dev/null || true
@@ -1087,7 +1085,7 @@ docker run -d \
 curl "http://localhost:${HOST_PORT}"
 ```
 
-파일을 변경합니다.
+파일 변경:
 
 ```bash
 cat > bind-test/index.html <<'EOF'
@@ -1137,7 +1135,11 @@ docker run -d \
 docker exec e1-1-volume-2 cat /data/result.txt
 ```
 
-마지막 출력은 `persistent data`여야 합니다.
+마지막 출력:
+
+```text
+persistent data
+```
 
 ```bash
 git add docs/volume-persistence.md docs/screenshots/volume
@@ -1148,18 +1150,18 @@ git push
 
 ---
 
-# 19. 트러블슈팅·증거·보안
+# 19. 트러블슈팅·증거·스크린샷·보안
 
-## 19.1 최소 2건 기록
+## 19.1 트러블슈팅 최소 2건
 
-`docs/troubleshooting.md` 형식:
+`docs/troubleshooting.md`:
 
 ```markdown
 ## 문제 ID: TS-01
 
 - 발생 환경:
 - 실행 위치: macOS / Ubuntu / VS Code Ubuntu / 컨테이너
-- 작업 브랜치:
+- 작업 branch:
 - 실행 명령:
 - 오류 메시지 원문:
 - 재현 방법:
@@ -1170,15 +1172,24 @@ git push
 - 공식 참고문서:
 ```
 
-VS Code 관련 오류도 기록 대상입니다.
+## 19.2 스크린샷 파일명
 
-- `ssh codyssey-training@orb` 실패
-- Remote-SSH 연결 실패
-- VS Code Server 설치 실패
-- 통합 터미널이 `/Users/...`에서 열림
-- 현재 branch가 `main`
+규칙: [`docs/screenshots/README.md`](docs/screenshots/README.md)
 
-## 19.2 보안 점검
+```text
+vscode/01-remote-ssh-status.png
+vscode/02-ubuntu-shell-path.png
+vscode/03-git-branch.png
+docker/01-docker-version.png
+port/01-browser-response.png
+mount/01-bind-before.png
+mount/02-bind-after.png
+volume/01-volume-persistence.png
+```
+
+촬영 전 token·인증 코드·개인키·학교 내부정보·개인정보를 제거합니다.
+
+## 19.3 보안 점검
 
 ```bash
 git status -sb
@@ -1190,22 +1201,17 @@ find . -maxdepth 5 -type f \
   \( -name '.env' -o -name '.env.local' -o -name '*.pem' -o -name 'id_rsa' -o -name 'id_ed25519' -o -name 'hosts.yml' \)
 ```
 
-저장소와 스크린샷에 포함하지 않습니다.
+저장소에 포함하지 않습니다.
 
 - GitHub token·인증 코드
 - `~/.config/gh/hosts.yml`
 - `~/.orbstack/ssh/id_ed25519`
-- `~/.ssh/config` 전체 내용
+- `~/.ssh/config` 전체
 - `.env.local`
 - 학교 내부 민감정보
 
 ```bash
-git add \
-  README.md \
-  docs/troubleshooting.md \
-  docs/requirement-traceability.md \
-  docs/test-results.md
-
+git add README.md docs scripts
 git diff --cached
 git commit -m "Docs: add troubleshooting and evidence traceability"
 git push
@@ -1213,12 +1219,50 @@ git push
 
 ---
 
-# 20. clean clone 사전 검증
+# 20. 중단 후 작업 재개
+
+Mac:
+
+```bash
+orb status
+ssh codyssey-training@orb
+```
+
+Ubuntu 또는 VS Code 원격 터미널:
+
+```bash
+cd ~/codyssey-training/codyssey-training-e1-1
+bash scripts/resume-check.sh
+```
+
+터미널을 닫으면 다음 셸 변수는 사라집니다.
+
+```text
+CODE_BIN
+REMOTE_DIR
+WORK_BRANCH
+HOST_PORT
+PR_NUMBER
+SOURCE_DIR
+CURRENT_BRANCH
+RETEST_DIR
+```
+
+필요할 때 다시 계산합니다. `.env.local`이 있으면:
+
+```bash
+source .env.local
+```
+
+스크립트에서 설정한 변수는 부모 셸에 자동으로 남지 않습니다.
+
+---
+
+# 21. clean clone 사전 검증
 
 PR을 Ready로 바꾸기 전에 수행합니다.
 
 ```bash
-# [VS Code Ubuntu: 원본 저장소]
 git status -sb
 git push
 
@@ -1288,7 +1332,7 @@ git push
 
 ---
 
-# 21. PR 최종 점검과 병합
+# 22. PR 최종 점검과 병합
 
 ```bash
 PR_NUMBER="$(gh pr view --json number --jq '.number')"
@@ -1300,12 +1344,12 @@ gh pr diff "$PR_NUMBER" --name-only
 gh pr diff "$PR_NUMBER"
 ```
 
-확인 사항:
+확인:
 
-- VS Code Remote-SSH 증거가 있다.
-- `.env.local`과 개인키가 없다.
-- Dockerfile, `site/`, `bind-test/`, `docs/`가 있다.
-- clean clone 결과가 있다.
+- Remote-SSH 증거 존재
+- `.env.local`, token, 개인키 없음
+- Dockerfile, `site/`, `bind-test/`, `docs/`, `scripts/` 존재
+- clean clone 결과 존재
 
 ```bash
 gh pr checks "$PR_NUMBER"
@@ -1313,7 +1357,7 @@ gh pr checks "$PR_NUMBER"
 
 | 상태 | 조치 |
 |---|---|
-| 검사 통과 | 계속 진행 |
+| 검사 통과 | 계속 |
 | 검사 없음 | `CI 없음, 수동 clean clone 완료` 기록 |
 | 검사 실패 | 병합 금지 |
 | 검사 대기 | 완료까지 대기 |
@@ -1328,7 +1372,7 @@ gh pr merge "$PR_NUMBER" --merge --delete-branch
 
 ---
 
-# 22. 병합 후 최종 검증
+# 23. 병합 후 최종 검증
 
 ```bash
 git switch main
@@ -1340,24 +1384,21 @@ git log --oneline --graph --decorate --all -20
 gh pr list --state merged --limit 10
 ```
 
-```bash
-docker build -t codyssey-e1-1-web:final .
-docker rm -f e1-1-final 2>/dev/null || true
-docker run -d \
-  --name e1-1-final \
-  -p 18082:80 \
-  codyssey-e1-1-web:final
+최종 자동 검증:
 
-curl http://localhost:18082
+```bash
+bash scripts/final-check.sh
 ```
 
-Default branch에서 웹 응답이 나오면 완료입니다.
+모든 항목이 `[PASS]`여야 완료입니다. 결과를 `docs/test-results.md`에 기록합니다.
 
 ---
 
-# 23. 공용 장비 로그아웃
+# 24. 공용 장비 로그아웃과 안전한 정리
 
-모든 작업이 끝난 뒤 학교 공용 장비에서만 실행합니다.
+## 24.1 로그아웃
+
+모든 작업과 제출 확인 후 학교 공용 장비에서만:
 
 ```bash
 gh auth status --hostname github.com
@@ -1365,56 +1406,78 @@ gh auth logout --hostname github.com
 gh auth status --hostname github.com || true
 ```
 
-OrbStack SSH 개인키를 삭제하거나 저장소에 복사하지 않습니다. 학교 운영 정책에 따라 OrbStack과 VS Code의 로그인 세션도 종료합니다.
+## 24.2 E1-1 자원만 정리
+
+증거와 평가 확인이 끝난 뒤:
+
+```bash
+bash scripts/cleanup-e1-1.sh
+```
+
+이미지까지 제거하려면:
+
+```bash
+bash scripts/cleanup-e1-1.sh --images
+```
+
+다음은 사용하지 않습니다.
+
+```bash
+docker system prune
+docker system prune -a
+```
 
 ---
 
-# 24. 오류 대응표
+# 25. 오류 대응표
 
 | 증상 | 확인 | 조치 |
 |---|---|---|
-| `orb info`에서 machine 없음 | `orb list` | machine 생성 |
-| GitHub 접속 실패 | `getent hosts`, `curl -I` | 네트워크 해결 후 재시도 |
-| `docker: command not found` | `mac which docker` | `mac link docker` |
-| Docker Server 정보 없음 | `docker info` | OrbStack 실행·link 확인 |
-| SSH 연결 실패 | `ssh codyssey-training@orb` | `orb status`, `orb info`, `ssh -G` 확인 |
-| SSH 비밀번호 요구 | 연결 대상 확인 | OrbStack 내장 SSH는 키 인증이며 별도 sshd 설치 금지 |
-| Remote-SSH 호스트가 안 보임 | Mac VS Code 확장 | `ms-vscode-remote.remote-ssh` 설치 |
-| VS Code Server 설치 실패 | Remote - SSH Output | 네트워크·디스크·권한 확인 |
-| 통합 터미널 경로가 `/Users/...` | `pwd`, 상태 표시줄 | Remote-SSH 창에서 폴더 다시 열기 |
-| 통합 터미널이 홈에서 시작 | `pwd` | 저장소 폴더를 Open Folder로 열고 새 터미널 생성 |
-| 셸이 예상과 다름 | `$SHELL`, `ps -p $$` | `.vscode/settings.json`과 Remote Settings 확인 |
-| 현재 branch가 `main` | `git branch --show-current` | `git switch feat/e1-1-complete` |
-| `unknown flag: --clipboard` | `gh --version` | 해당 옵션 제외 |
-| push 권한 없음 | `viewerPermission` | WRITE 이상 권한 요청 |
-| clone 폴더 중복 | 기존 폴더 확인 | 기존 작업 보존, 다른 경로 사용 |
+| machine 없음 | `orb list` | `orb create ubuntu:noble codyssey-training` |
+| GitHub 접속 실패 | `getent hosts`, `curl -I` | 네트워크 해결 |
+| Docker 명령 없음 | `mac which docker` | `mac link docker` |
+| Docker Server 없음 | `docker info` | OrbStack·command link 확인 |
+| `code: command not found` | 앱 설치 위치 | `CODE_BIN`으로 앱 내부 CLI 사용 |
+| `--remote` 없음 | `code --version`, `type -a code` | 올바른 VS Code CLI 선택 |
+| SSH 실패 | `ssh codyssey-training@orb` | `orb status`, `orb info`, `ssh -G` |
+| SSH 비밀번호 요구 | host 확인 | 내장 SSH 사용, 별도 sshd 설치 금지 |
+| Remote-SSH 확장 없음 | `--list-extensions` | extension 설치 |
+| VS Code Server 실패 | Remote - SSH Output | `tar`, `curl/wget`, HOME 쓰기, 디스크 확인 |
+| `/Users/...` 열림 | `pwd` | `--remote`와 Ubuntu 절대 경로 사용 |
+| 터미널이 home에서 시작 | `pwd` | 저장소 folder를 다시 열고 새 터미널 |
+| branch가 `main` | `git branch --show-current` | 작업 branch 전환 후 수정 |
+| local branch 중복 | `show-ref` | 기존 local branch 재사용 |
+| remote branch만 존재 | `ls-remote` | tracking branch 생성 |
+| PR 중복 | `gh pr list --head` | 기존 PR 재사용 |
+| `unknown flag: --clipboard` | `gh --version` | 옵션 제외 |
+| push 권한 없음 | `viewerPermission` | WRITE 이상 요청 |
+| clone 폴더 중복 | 기존 폴더 `git status` | 작업 보존, 삭제 금지 |
 | 포트 충돌 | `mac lsof`, `docker ps` | 다른 포트 선택 |
+| 셸 변수 사라짐 | 새 터미널 여부 | 변수 재계산, `.env.local` source |
 | chmod가 Git에 안 보임 | `ls -l` | 문서·스크린샷으로 증명 |
-| PR checks 없음 | `gh pr checks` | CI 없음과 수동 검증 기록 |
-| push 거절 | `git fetch`, `git branch -vv` | force push 금지 |
+| PR checks 없음 | `gh pr checks` | CI 없음·수동 검증 기록 |
+| push 거절 | `git fetch`, `branch -vv` | force push 금지 |
 
 ---
 
-# 25. 확장 부록
+# 26. 확장 부록
 
-## 25.1 `code .`의 위치
-
-OrbStack Linux machine에서 `code`는 Mac의 VS Code 명령으로 연결될 수 있습니다. 다음 명령은 Mac VS Code를 여는 보조 수단입니다.
+## 26.1 `code .`의 위치
 
 ```bash
 command -v code || true
 code .
 ```
 
-그러나 다음을 보장하지 않습니다.
+이 명령은 Mac VS Code를 여는 보조 수단일 수 있지만 다음을 보장하지 않습니다.
 
-- 현재 창이 Remote-SSH 창임
-- 통합 터미널이 Ubuntu에서 실행됨
-- workspace가 Ubuntu 저장소 경로임
+- Remote-SSH 창
+- Ubuntu 통합 터미널
+- Ubuntu workspace 경로
 
-따라서 필수 경로는 10장의 Remote-SSH 절차입니다.
+필수 경로는 10장의 `code --remote`입니다.
 
-## 25.2 다른 `git add` 방식
+## 26.2 다른 `git add`
 
 ```bash
 git add -p E1-1-training.md
@@ -1422,7 +1485,7 @@ git add -u
 git add -A
 ```
 
-## 25.3 다른 병합 방식
+## 26.3 다른 병합 방식
 
 ```bash
 gh pr merge "$PR_NUMBER" --squash --delete-branch
@@ -1431,7 +1494,7 @@ gh pr merge "$PR_NUMBER" --rebase --delete-branch
 
 ---
 
-# 26. 공식 참고문헌
+# 27. 공식 참고문헌
 
 > 확인일: **2026-08-02**
 
@@ -1449,9 +1512,9 @@ gh pr merge "$PR_NUMBER" --rebase --delete-branch
 
 - [R8] Remote Development using SSH — <https://code.visualstudio.com/docs/remote/ssh>
 - [R9] Remote-SSH tutorial — <https://code.visualstudio.com/docs/remote/ssh-tutorial>
-- [R10] Terminal basics — <https://code.visualstudio.com/docs/terminal/basics>
-- [R11] Terminal profiles — <https://code.visualstudio.com/docs/terminal/profiles>
-- [R12] User and workspace settings — <https://code.visualstudio.com/docs/configure/settings>
+- [R10] Command line — <https://code.visualstudio.com/docs/configure/command-line>
+- [R11] macOS setup — <https://code.visualstudio.com/docs/setup/mac>
+- [R12] Terminal basics — <https://code.visualstudio.com/docs/terminal/basics>
 
 ## Docker
 
@@ -1475,9 +1538,10 @@ gh pr merge "$PR_NUMBER" --rebase --delete-branch
 
 ## 최종 완료 정의
 
-> 저장소를 clone한 직후 작업 브랜치를 생성했다.  
-> VS Code는 OrbStack 내장 SSH와 Remote-SSH로 `codyssey-training@orb`에 연결했다.  
-> 새 통합 터미널에서 Ubuntu 24.04, 셸, 저장소 경로, 작업 브랜치를 검증했다.  
-> GitHub CLI와 Docker 실습을 Ubuntu에서 수행했다.  
-> clean clone을 통과한 뒤 PR을 병합했다.  
-> Default branch에서 최종 빌드와 웹 응답을 확인했다.
+> 저장소를 clone한 직후 기존 local·remote branch를 확인하고 작업 branch를 선택했다.  
+> Mac에서 `code --remote`와 Ubuntu 절대 경로로 Remote-SSH workspace를 열었다.  
+> 원격 통합 터미널에서 Ubuntu 24.04, 셸, 저장소 경로, 작업 branch를 검증했다.  
+> GitHub CLI와 Docker 미션을 수행하고 증거를 기록했다.  
+> 중단 후 재개와 clean clone을 검증했다.  
+> PR을 병합한 뒤 `scripts/final-check.sh`를 통과했다.  
+> 평가자는 README와 docs만 보고 동일한 절차를 재현할 수 있다.
