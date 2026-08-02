@@ -13,7 +13,6 @@ REMOTE_REPO='${HOME}/codyssey-training/codyssey-training-e1-1'
 
 pass() { printf '[PASS] %s\n' "$*"; }
 fail() { printf '[FAIL] %s\n' "$*" >&2; FAILURES=$((FAILURES + 1)); }
-warn() { printf '[WARN] %s\n' "$*" >&2; }
 info() { printf '[INFO] %s\n' "$*"; }
 
 printf '=== E1-1 macOS 사전 점검 ===\n'
@@ -110,10 +109,8 @@ if command -v ssh >/dev/null 2>&1; then
 fi
 
 if [ -n "$CODE_BIN" ]; then
-  info "현재 세션에서 사용할 명령:"
-  printf 'CODE_BIN=%q\n' "$CODE_BIN"
-  info "원격 작업 디렉터리 계산:"
-  printf 'REMOTE_DIR="$(ssh %s '\''printf "%%s/codyssey-training/codyssey-training-e1-1" "$HOME"'\'')"\n' "$REMOTE_HOST"
+  info "현재 세션에서 사용할 VS Code CLI: $CODE_BIN"
+  info "REMOTE_DIR는 E1-1-training.md 10.6의 명령으로 계산하십시오"
 fi
 
 printf '\n'
